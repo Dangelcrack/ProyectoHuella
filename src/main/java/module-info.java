@@ -9,6 +9,7 @@ module com.github.dangelcrack {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires jakarta.persistence;
+    requires java.desktop;
 
     // Abre los paquetes para JavaFX y Hibernate
     opens com.github.dangelcrack to javafx.fxml;

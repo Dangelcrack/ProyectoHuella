@@ -31,9 +31,9 @@ public class App extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/github/dangelcrack/view/login.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource(Scenes.LOGIN.getURL()));
         primaryStage.setTitle("Login");
-        primaryStage.setScene(new Scene(root, 600, 400));
+        primaryStage.setScene(new Scene(root, 1105, 654));
         primaryStage.show();
     }
 
