@@ -1,5 +1,6 @@
 package com.github.dangelcrack.controller;
 
+import com.github.dangelcrack.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -38,13 +39,11 @@ public class RegisterController extends Controller implements Initializable {
     private Button registerButton;
 
     @FXML
-    private Button loginButton; // Botón para ir a la vista de login
+    private Button loginButton;
 
-    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Estilo para el botón de login al pasar el ratón
         loginButton.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
             loginButton.setStyle("""
                     -fx-font-size: 14px; -fx-background-color: #005299; -fx-text-fill: white;
@@ -58,8 +57,6 @@ public class RegisterController extends Controller implements Initializable {
                     -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20;
                     -fx-cursor: hand; -fx-background-color: #1e90ff; -fx-pref-width: 150; -fx-pref-height: 40;""");
         });
-
-        // Estilo para el botón de registro al pasar el ratón
         registerButton.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
             registerButton.setStyle("""
                     -fx-background-color: #ff3b8d; -fx-font-size: 14px; -fx-text-fill: white;
@@ -83,35 +80,30 @@ public class RegisterController extends Controller implements Initializable {
         String password = passwordField.getText().trim();
         String confirmPassword = confirmPasswordField.getText().trim();
 
-        // Verificar que los campos no estén vacíos
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            showAlert("Error", "Todos los campos son obligatorios.", Alert.AlertType.ERROR);
+            Utils.showAlert("Error", "Todos los campos son obligatorios.", Alert.AlertType.ERROR);
             return;
         }
-
-        // Verificar si las contraseñas coinciden
         if (!password.equals(confirmPassword)) {
-            showAlert("Error", "Las contraseñas no coinciden.", Alert.AlertType.ERROR);
+            Utils.showAlert("Error", "Las contraseñas no coinciden.", Alert.AlertType.ERROR);
             return;
         }
 
-        // Verificar si el nombre de usuario ya está en uso
-        if (usuarioDAO.leeUsuario(username) != null) {
-            showAlert("Error", "El nombre de usuario ya está en uso.", Alert.AlertType.ERROR);
+        if (UsuarioDAO.build().leeUsuario(username) != null) {
+            Utils.showAlert("Error", "El nombre de usuario ya está en uso.", Alert.AlertType.ERROR);
             return;
         }
 
-        // Crear un nuevo usuario y guardarlo en la base de datos
         Usuario nuevoUsuario = new Usuario();
         nuevoUsuario.setNombre(username);
         nuevoUsuario.setEmail(email);
         nuevoUsuario.setContraseña(password);
         nuevoUsuario.setFechaRegistro(Instant.now());
 
-        if (usuarioDAO.creaUsuario(nuevoUsuario)) {
-            showAlert("Éxito", "Registro exitoso. Ahora puede iniciar sesión.", Alert.AlertType.INFORMATION);
+        if (UsuarioDAO.build().creaUsuario(nuevoUsuario)) {
+            Utils.showAlert("Éxito", "Registro exitoso. Ahora puede iniciar sesión.", Alert.AlertType.INFORMATION);
         } else {
-            showAlert("Error", "No se pudo crear el usuario. Intente nuevamente.", Alert.AlertType.ERROR);
+            Utils.showAlert("Error", "No se pudo crear el usuario. Intente nuevamente.", Alert.AlertType.ERROR);
         }
     }
 
@@ -121,25 +113,15 @@ public class RegisterController extends Controller implements Initializable {
     }
 
     private void loadScene(Scenes scene) throws IOException {
-        // Usar el enum para obtener la URL de la escena
         FXMLLoader loader = new FXMLLoader(getClass().getResource(scene.getURL()));
         Parent root = loader.load();
         Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.setScene(new Scene(root));
-
-        // Mostrar la nueva escena
         stage.show();
     }
 
-    private void showAlert(String title, String content, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
     @Override
-    public void onOpen(Object input) throws IOException {
+    public void onOpen(Usuario usuario,Object input) throws IOException {
 
     }
 

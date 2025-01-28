@@ -2,6 +2,7 @@ package com.github.dangelcrack;
 
 import com.github.dangelcrack.controller.AppController;
 import com.github.dangelcrack.model.entity.Scenes;
+import com.github.dangelcrack.model.entity.Usuario;
 import com.github.dangelcrack.view.View;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static javafx.application.Application.launch;
 
@@ -30,11 +32,28 @@ public class App extends Application {
      * @throws IOException if loading the FXML file fails.
      */
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource(Scenes.LOGIN.getURL()));
-        primaryStage.setTitle("Login");
-        primaryStage.setScene(new Scene(root, 1105, 654));
+    public void start(Stage primaryStage) throws IOException {
+        stage = primaryStage;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(Scenes.LOGIN.getURL()));
+        Parent root = loader.load();
+        Scene scene = new Scene(root,1105,654);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Aplicación");
         primaryStage.show();
+    }
+
+    public static void changeToMainScene(Usuario usuario) throws IOException {
+        FXMLLoader loader = new FXMLLoader(App.class.getResource(Scenes.ROOT.getURL()));
+        Parent root = loader.load();
+        Object controller = loader.getController();
+        if (controller instanceof AppController appController) {
+            appController.onOpen(usuario,controller);
+        } else {
+            throw new IllegalStateException("El controlador no es del tipo esperado.");
+        }
+        currentController = loader.getController();
+        Scene scene = new Scene(root,1105,654);
+        App.stage.setScene(scene);
     }
 
     /**

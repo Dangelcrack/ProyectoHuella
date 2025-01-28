@@ -3,6 +3,7 @@ package com.github.dangelcrack.controller;
 import com.github.dangelcrack.App;
 import com.github.dangelcrack.model.entity.Scenes;
 import com.github.dangelcrack.model.entity.Usuario;
+import com.github.dangelcrack.utils.Utils;
 import com.github.dangelcrack.view.View;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,15 +34,27 @@ public class AppController extends Controller implements Initializable {
     }
 
     @Override
-    public void onOpen(Object input) throws IOException {
-        this.usuario = (Usuario) input;
+    public void onOpen(Usuario usuario ,Object input) throws IOException {
+        this.usuario = usuario;
         try {
-            changeScene(Scenes.USERCONFIG, input); // Puedes pasar datos iniciales si es necesario
+            changeScene(Scenes.USERCONFIG, input);
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Error al cargar la configuración inicial.");
+            Utils.showAlert("Error", "Error al cargar la configuración inicial.", Alert.AlertType.ERROR);
         }
     }
+    public void openModal(Scenes scene, String title, Controller parent, Object data) throws IOException {
+        View view = loadFXML(scene);
+        Stage stage = new Stage();
+        stage.setTitle(title);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(App.stage);
+        Scene _scene = new Scene(view.scene);
+        stage.setScene(_scene);
+        view.controller.onOpen(usuario,parent);
+        stage.showAndWait();
+    }
+
 
     @Override
     public void onClose(Object output) {
@@ -56,18 +69,10 @@ public class AppController extends Controller implements Initializable {
      * @throws IOException Si ocurre un error al cargar la escena.
      */
     public void changeScene(Scenes scene, Object data) throws IOException {
-        try {
             View view = loadFXML(scene);
             borderPane.setCenter(view.scene); // Coloca la nueva escena en el centro del BorderPane
             this.centerController = view.controller;
-
-            if (this.centerController != null) {
-                this.centerController.onOpen(data);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            showError("No se pudo cargar la escena: " + scene.name());
-        }
+            this.centerController.onOpen(usuario,data);
     }
 
 
@@ -90,62 +95,20 @@ public class AppController extends Controller implements Initializable {
         return view;
     }
 
-    /**
-     * Muestra un mensaje de error en la consola y en una ventana emergente.
-     *
-     * @param message El mensaje de error que se quiere mostrar.
-     */
-    private void showError(String message) {
-        System.err.println(message);
 
-        // Mostrar un mensaje emergente para el usuario
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Se produjo un error");
-        alert.setContentText(message);
-        alert.showAndWait();
+    @FXML
+    private void irpreferenciasusuarios() throws IOException {
+        changeScene(Scenes.USERCONFIG, usuario);
     }
 
     @FXML
-    private void irpreferenciasusuarios() {
-        try {
-
-            changeScene(Scenes.USERCONFIG, usuario);
-        } catch (IOException e) {
-            mostrarError("No se pudo cargar la vista de Ajustes de Usuario.");
-        }
+    private void iractividades() throws IOException {
+        changeScene(Scenes.ACTIVITIES, usuario);
     }
 
     @FXML
-    private void iractividades() {
-        try {
-            // Cambia a la escena de Actividades
-            changeScene(Scenes.ACTIVITIES, null);
-        } catch (IOException e) {
-            mostrarError("No se pudo cargar la vista de Actividades.");
-        }
+    private void irahuellas() throws IOException {
+        changeScene(Scenes.TRACKS, usuario);
     }
 
-    @FXML
-    private void irahuellas() {
-        try {
-            // Cambia a la escena de Huellas
-            changeScene(Scenes.TRACKS, null);
-        } catch (IOException e) {
-            mostrarError("No se pudo cargar la vista de Huellas.");
-        }
-    }
-
-    /**
-     * Método auxiliar para mostrar una alerta de error.
-     *
-     * @param mensaje El mensaje a mostrar.
-     */
-    private void mostrarError(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
 }

@@ -22,7 +22,7 @@ public class HuellaDAO extends Huella{
      * @return true if the entity was successfully created, false otherwise.
      */
     public boolean creaHuella(Huella huella) {
-        if (huella == null || leeHuella(huella.getId()) != null) {
+        if (huella == null) {
             return false;
         }
 
@@ -41,40 +41,6 @@ public class HuellaDAO extends Huella{
         }
 
         return creado;
-    }
-
-    /**
-     * Reads a specific Huella entity by its ID.
-     *
-     * @param id the ID of the Huella to read.
-     * @return the Huella entity if found, or null if not found.
-     */
-    public Huella leeHuella(Integer id) {
-        Huella huella = null;
-        try (Session session = Connection.getInstance().getSession()) {
-            huella = session.get(Huella.class, id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return huella;
-    }
-
-    /**
-     * Reads all Huella entities from the database.
-     *
-     * @return a list of all Huella entities.
-     */
-    public List<Huella> leerTodasHuellas() {
-        List<Huella> huellas = null;
-        try (Session session = Connection.getInstance().getSession()) {
-            Query<Huella> query = session.createQuery("FROM Huella", Huella.class);
-            huellas = query.getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return huellas;
     }
 
     /**
@@ -140,12 +106,21 @@ public class HuellaDAO extends Huella{
     public List<Huella> obtenerHuellasPorUsuario(Usuario usuario) {
         List<Huella> huellas = null;
         try (Session session = Connection.getInstance().getSession()) {
-            Query<Huella> query = session.createQuery("FROM Huella WHERE Usuario = :usuario", Huella.class);
+            Query<Huella> query = session.createQuery("FROM Huella WHERE idUsuario = :usuario", Huella.class);
             query.setParameter("usuario", usuario);
             huellas = query.getResultList();
+            for (Huella huella : huellas) {
+                if (huella.getIdActividad() != null) {
+                    huella.getIdActividad().getNombre();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return huellas;
+    }
+
+    public static HuellaDAO build() {
+        return new HuellaDAO();
     }
 }

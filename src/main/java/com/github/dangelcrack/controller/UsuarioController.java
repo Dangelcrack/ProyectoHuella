@@ -10,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.Button;
 import com.github.dangelcrack.utils.Utils;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
 import java.net.URL;
@@ -44,23 +45,14 @@ public class UsuarioController extends Controller implements Initializable {
     }
 
     @Override
-    public void onOpen(Object input) throws IOException {
-        // Populate fields if input is provided
-        if (input instanceof Usuario usuario) {
-            this.usuario = usuario;
+    public void onOpen(Usuario usuario, Object input) throws IOException {
             nombreField.setText(usuario.getNombre());
             emailField.setText(usuario.getEmail());
-        }
     }
 
     @Override
     public void onClose(Object output) {
-        // Handle output logic if needed
-        if (output instanceof Usuario usuario) {
-            usuario.setNombre(nombreField.getText());
-            usuario.setEmail(emailField.getText());
-            usuario.setContraseña(contraseñaField.getText());
-        }
+
     }
 
     @FXML

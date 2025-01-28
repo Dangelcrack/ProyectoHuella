@@ -1,6 +1,7 @@
 package com.github.dangelcrack.controller;
 
 import com.github.dangelcrack.App;
+import com.github.dangelcrack.model.entity.Usuario;
 
 import java.io.IOException;
 
@@ -21,7 +22,7 @@ public abstract class Controller {
      * @param input The input object passed to the controller when opened.
      * @throws IOException If an I/O error occurs.
      */
-    public abstract void onOpen(Object input) throws IOException;
+    public abstract void onOpen(Usuario usuario , Object input) throws IOException;
 
     /**
      * Abstract method onClose - to be implemented by subclasses to define behavior upon closing.

@@ -35,7 +35,6 @@ public class LoginController extends Controller implements Initializable {
     @FXML
     private Button registerButton;
 
-    private UsuarioDAO usuarioDAO = new UsuarioDAO();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -65,11 +64,10 @@ public class LoginController extends Controller implements Initializable {
             return;
         }
 
-        Usuario usuario = usuarioDAO.findByUsernameAndPassword(username, password);
+        Usuario usuario = UsuarioDAO.build().findByUsernameAndPassword(username, password);
         if (usuario != null) {
             try {
-                Stage stage = (Stage) loginButton.getScene().getWindow();
-                navigateToMainLayout(stage, usuario);
+                App.changeToMainScene(usuario);
             } catch (IOException e) {
                 Utils.showAlert("Error", "No se pudo cargar la siguiente pantalla.", Alert.AlertType.ERROR);
             }
@@ -77,24 +75,6 @@ public class LoginController extends Controller implements Initializable {
             Utils.showAlert("Error", "Credenciales inválidas. Por favor, intente de nuevo.", Alert.AlertType.ERROR);
         }
     }
-
-
-    private void navigateToMainLayout(Stage stage, Usuario usuario) throws IOException {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(Scenes.ROOT.getURL()));
-            Parent root = loader.load();
-            AppController appController = loader.getController();
-            appController.onOpen(usuario);
-            Scene scene = new Scene(root, 1105, 654);
-            stage.setScene(scene);
-            stage.setTitle("Bienvenido");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace(); // Para obtener más detalles sobre el error
-            Utils.showAlert("Error", "No se pudo cargar la siguiente pantalla: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
 
     @FXML
     private void handleRegister() throws IOException {
@@ -111,7 +91,7 @@ public class LoginController extends Controller implements Initializable {
 
 
     @Override
-    public void onOpen(Object input) throws IOException {
+    public void onOpen(Usuario usuario,Object input) throws IOException {
     }
 
     @Override

@@ -1,47 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.github.dangelcrack.controller.UsuarioController"
-            prefHeight="654.0" prefWidth="1105.0"
-            style="-fx-background-color: linear-gradient(to bottom, #1e90ff, #ff69b4);">
-
-    <VBox alignment="CENTER" spacing="10.0"
-          style="-fx-pref-width: 300px; -fx-pref-height: 450px; -fx-background-color: rgba(255, 255, 255, 0.8);
-                 -fx-padding: 10; -fx-background-radius: 15; -fx-border-radius: 15;"
-          AnchorPane.leftAnchor="400" AnchorPane.rightAnchor="400" AnchorPane.topAnchor="100"
-          AnchorPane.bottomAnchor="100">
-
-        <Label text="Editar Perfil" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #ff69b4;"/>
-
-        <Label text="Nombre:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-        <TextField fx:id="nombreField" promptText="Ingresa tu nombre"
-                   style="-fx-padding: 8; -fx-background-radius: 10;"/>
-
-        <Label text="Email:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-        <TextField fx:id="emailField" promptText="Ingresa tu correo"
-                   style="-fx-padding: 8; -fx-background-radius: 10;"/>
-
-        <Label text="Contraseña:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-        <PasswordField fx:id="contraseñaField" promptText="Ingresa nueva contraseña"
-                       style="-fx-padding: 8; -fx-background-radius: 10;"/>
-
-        <HBox alignment="CENTER" spacing="15.0">
-            <Button fx:id="guardarButton" onAction="#handleGuardar" text="Guardar Cambios"
-                    style="-fx-font-size: 14px; -fx-background-color: #1e90ff; -fx-text-fill: white;
-                           -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20;
-                           -fx-cursor: hand;"/>
-            <Button fx:id="cancelarButton" onAction="#handleCancelar" text="Cancelar"
-                    style="-fx-font-size: 14px; -fx-background-color: #ff69b4; -fx-text-fill: white;
-                           -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20;
-                           -fx-cursor: hand;"/>
+<VBox fx:id="vBox" alignment="CENTER" prefHeight="347.0" prefWidth="729.0" spacing="20.0"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.github.dangelcrack.controller.HuellaController">
+    <children>
+        <TableView fx:id="tableView" editable="true" maxWidth="1000.0" minWidth="1000.0" prefWidth="1000.0"
+                   style="-fx-font-family: 'Arial'; -fx-font-size: 15.0; -fx-font-style: italic; -fx-font-weight: bold; -fx-background-color: transparent; -fx-background-insets: 0, 0 0 1 0; -fx-background-radius: 0;">
+            <columns>
+                <TableColumn fx:id="valorColumn" maxWidth="1000.0" prefWidth="100.0" resizable="false" text="Valor"/>
+                <TableColumn fx:id="unidadColumn" maxWidth="1000.0" prefWidth="110.0" resizable="false"
+                             text="Unidad"/>
+                <TableColumn fx:id="fechaColumn" maxWidth="446.0" minWidth="392.0" prefWidth="392.0" resizable="false"
+                             text="Fecha"/>
+                <TableColumn fx:id="actividadColumn" maxWidth="315.0" minWidth="105.0" prefWidth="184.0" resizable="false"
+                             text="Actividad"/>
+            </columns>
+        </TableView>
+        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+            <children>
+                <Button mnemonicParsing="false" onAction="#addHuella"
+                        style="-fx-font-family: 'Arial'; -fx-font-size: 15.0; -fx-font-style: italic; -fx-font-weight: bold; -fx-background-color: -fx-text-box-border, -fx-background; -fx-background-insets: 0, 0 0 1 0; -fx-background-radius: 0;"
+                        text="Add">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#deleteHuella"
+                        style="-fx-font-family: 'Arial'; -fx-font-size: 15.0; -fx-font-style: italic; -fx-font-weight: bold; -fx-background-color: -fx-text-box-border, -fx-background; -fx-background-insets: 0, 0 0 1 0; -fx-background-radius: 0;"
+                        text="Delete">
+                    <HBox.margin>
+                        <Insets left="100.0"/>
+                    </HBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#editHuella"
+                        style="-fx-font-family: 'Arial'; -fx-font-size: 15.0; -fx-font-style: italic; -fx-font-weight: bold; -fx-background-color: -fx-text-box-border, -fx-background; -fx-background-insets: 0, 0 0 1 0; -fx-background-radius: 0;"
+                        text="Edit">
+                    <HBox.margin>
+                        <Insets left="100.0"/>
+                    </HBox.margin>
+                </Button>
+            </children>
         </HBox>
-    </VBox>
-</AnchorPane>
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+</VBox>

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Data Access Object (DAO) for managing Usuario entities using Hibernate.
  */
-public class UsuarioDAO {
+public class UsuarioDAO extends Usuario{
 
     /**
      * Creates or inserts a new Usuario entity in the database.
