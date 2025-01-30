@@ -102,8 +102,8 @@ public class AppController extends Controller implements Initializable {
     }
 
     @FXML
-    private void iractividades() throws IOException {
-        changeScene(Scenes.ACTIVITIES, usuario);
+    private void irahabitos() throws IOException {
+        changeScene(Scenes.HABITOS, usuario);
     }
 
     @FXML

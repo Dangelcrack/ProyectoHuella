@@ -1,10 +1,8 @@
 package com.github.dangelcrack.model.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
-
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "huella", schema = "eco")
@@ -28,9 +26,8 @@ public class Huella {
     @Column(name = "unidad", nullable = false, length = 50)
     private String unidad;
 
-    @ColumnDefault("current_timestamp()")
-    @Column(name = "fecha")
-    private Instant fecha;
+    @Column(name = "fecha", nullable = false)
+    private LocalDateTime fecha;
 
     public Integer getId() {
         return id;
@@ -72,12 +69,11 @@ public class Huella {
         this.unidad = unidad;
     }
 
-    public Instant getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(Instant fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
-
 }

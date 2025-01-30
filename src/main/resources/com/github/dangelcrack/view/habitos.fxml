@@ -9,13 +9,13 @@
 
 <VBox fx:id="vBox" alignment="CENTER" prefHeight="347.0" prefWidth="729.0" spacing="20.0"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.github.dangelcrack.controller.HuellaController">
+      fx:controller="com.github.dangelcrack.controller.HabitoController">
     <children>
         <TableView fx:id="tableView" editable="true" maxWidth="1000.0" minWidth="1000.0" prefWidth="1000.0"
                    style="-fx-font-family: 'Arial'; -fx-font-size: 15.0; -fx-font-style: italic; -fx-font-weight: bold; -fx-background-color: transparent; -fx-background-insets: 0, 0 0 1 0; -fx-background-radius: 0;">
             <columns>
-                <TableColumn fx:id="valorColumn" prefWidth="100.0" resizable="false" text="Valor"/>
-                <TableColumn fx:id="unidadColumn" prefWidth="110.0" resizable="false" text="Unidad"/>
+                <TableColumn fx:id="frecuenciaColumn" prefWidth="100.0" resizable="false" text="Frecuencia"/>
+                <TableColumn fx:id="tipoColumn" prefWidth="110.0" resizable="false" text="Tipo"/>
                 <TableColumn fx:id="fechaColumn" prefWidth="392.0" resizable="false" text="Fecha"/>
                 <TableColumn fx:id="actividadColumn" prefWidth="184.0" resizable="false" text="Actividad"/>
             </columns>
@@ -23,11 +23,11 @@
 
         <HBox alignment="CENTER" spacing="20">
             <children>
-                <Button text="Add" onAction="#addHuella"
+                <Button text="Add" onAction="#addHabito"
                         style="-fx-font-family: 'Arial'; -fx-font-size: 15.0; -fx-font-style: italic; -fx-font-weight: bold;"/>
-                <Button text="Delete" onAction="#deleteHuella"
+                <Button text="Delete" onAction="#deleteHabito"
                         style="-fx-font-family: 'Arial'; -fx-font-size: 15.0; -fx-font-style: italic; -fx-font-weight: bold;"/>
-                <Button text="Edit" onAction="#editHuella"
+                <Button text="Edit" onAction="#editHabito"
                         style="-fx-font-family: 'Arial'; -fx-font-size: 15.0; -fx-font-style: italic; -fx-font-weight: bold;"/>
             </children>
         </HBox>

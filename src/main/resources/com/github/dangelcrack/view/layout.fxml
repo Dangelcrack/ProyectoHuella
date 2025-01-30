@@ -14,9 +14,9 @@
                         <MenuItem mnemonicParsing="false" onAction="#irpreferenciasusuarios" text="Ajustes de usuario" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Actividades">
+                <Menu mnemonicParsing="false" text="Habitos">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#iractividades" text="Actividades" />
+                  <MenuItem mnemonicParsing="false" onAction="#irahabitos" text="Habitos" />
                </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Huellas">

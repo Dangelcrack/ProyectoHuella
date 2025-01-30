@@ -1,20 +1,15 @@
 package com.github.dangelcrack.model.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import org.hibernate.Hibernate;
-
+import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class HabitoId implements java.io.Serializable {
-    private static final long serialVersionUID = 5290552046532460281L;
-    @Column(name = "id_usuario", nullable = false)
+public class HabitoId implements Serializable {
     private Integer idUsuario;
-
-    @Column(name = "id_actividad", nullable = false)
     private Integer idActividad;
 
+    // Getters y setters
     public Integer getIdUsuario() {
         return idUsuario;
     }
@@ -31,18 +26,18 @@ public class HabitoId implements java.io.Serializable {
         this.idActividad = idActividad;
     }
 
+    // Implementación de equals y hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        HabitoId entity = (HabitoId) o;
-        return Objects.equals(this.idActividad, entity.idActividad) &&
-                Objects.equals(this.idUsuario, entity.idUsuario);
+        if (o == null || getClass() != o.getClass()) return false;
+        HabitoId habitoId = (HabitoId) o;
+        return Objects.equals(idUsuario, habitoId.idUsuario) &&
+                Objects.equals(idActividad, habitoId.idActividad);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idActividad, idUsuario);
+        return Objects.hash(idUsuario, idActividad);
     }
-
 }
