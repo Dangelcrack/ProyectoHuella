@@ -1,0 +1,41 @@
+/* Column Header Background with Gradient */
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to bottom, #00A8E8, #006494);
+    -fx-text-fill: white;
+    -fx-padding: 12px 30px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 200, 255, 0.8), 20, 0, 0, 8);
+    -fx-font-weight: bold;
+}
+
+/* Column Header and Filler */
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent; /* Gradient background for header */
+    -fx-text-fill: white;
+}
+
+/* Column Header Labels */
+.table-view .column-header .label {
+    -fx-text-fill: white; /* El color del texto en el encabezado es blanco */
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 200, 255, 0.8), 20, 0, 0, 8);
+}
+
+/* Fondos de fila impares y pares */
+.table-view .table-row-cell:odd {
+    -fx-text-fill: white;
+    -fx-background-color: transparent; /* Negro para las filas impares */
+}
+
+.table-view .table-row-cell:even {
+    -fx-text-fill: white;
+    -fx-background-color: transparent; /* Gris oscuro para las filas pares */
+}
+
+.table-view .table-cell {
+    -fx-text-fill: white; /* El color del texto en las celdas es blanco */
+}
+
+/* Table Cells */
+.table-view .table-cell {
+    -fx-text-fill: black; /* Change text color to black */
+}

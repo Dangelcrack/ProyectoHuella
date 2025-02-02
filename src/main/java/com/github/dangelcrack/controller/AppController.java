@@ -11,7 +11,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -110,5 +109,8 @@ public class AppController extends Controller implements Initializable {
     private void irahuellas() throws IOException {
         changeScene(Scenes.TRACKS, usuario);
     }
-
+    @FXML
+    private void irCalcularImpacto () throws IOException {
+        changeScene(Scenes.IMPACTS,usuario);
+    }
 }

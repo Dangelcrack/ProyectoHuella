@@ -90,6 +90,7 @@ public class HabitoController extends Controller implements Initializable {
         fechaColumn.setCellValueFactory(habito -> new SimpleStringProperty(
                 habito.getValue().getUltimaFecha() != null ? habito.getValue().getUltimaFecha().toLocalDate().toString() : ""
         ));
+        tableView.getStylesheets().add(getClass().getResource("/com/github/dangelcrack/css/styles.css").toExternalForm());
     }
 
     @FXML

@@ -91,6 +91,7 @@ public class HuellaController extends Controller implements Initializable {
         fechaColumn.setCellValueFactory(huella -> new SimpleStringProperty(
                 huella.getValue().getFecha() != null ? huella.getValue().getFecha().toLocalDate().toString() : ""
         ));
+        tableView.getStylesheets().add(getClass().getResource("/com/github/dangelcrack/css/styles.css").toExternalForm());
     }
 
     @FXML

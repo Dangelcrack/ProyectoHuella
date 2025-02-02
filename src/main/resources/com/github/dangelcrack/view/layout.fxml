@@ -24,7 +24,12 @@
                   <MenuItem mnemonicParsing="false" onAction="#irahuellas" text="Huellas" />
                     </items>
                 </Menu>
-            </menus>
+            <Menu mnemonicParsing="false" text="Impacto">
+                <items>
+                    <MenuItem mnemonicParsing="false" onAction="#irCalcularImpacto" text="Calcular mi impacto" />
+                </items>
+            </Menu>
+        </menus>
         </MenuBar>
     </top>
 </BorderPane>
