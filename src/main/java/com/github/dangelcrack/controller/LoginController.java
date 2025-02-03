@@ -38,20 +38,6 @@ public class LoginController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Estilizar botones al pasar el ratón por encima
-        loginButton.setOnMouseEntered(e -> loginButton.setStyle("""
-                -fx-font-size: 14px; -fx-background-color: #005299; -fx-text-fill: white;
-                -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20; -fx-cursor: hand;"""));
-        loginButton.setOnMouseExited(e -> loginButton.setStyle("""
-                -fx-font-size: 14px; -fx-background-color: #1e90ff; -fx-text-fill: white;
-                -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20; -fx-cursor: hand;"""));
-
-        registerButton.setOnMouseEntered(e -> registerButton.setStyle("""
-                -fx-font-size: 14px; -fx-background-color: #ff3b8d; -fx-text-fill: white;
-                -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20; -fx-cursor: hand;"""));
-        registerButton.setOnMouseExited(e -> registerButton.setStyle("""
-                -fx-font-size: 14px; -fx-background-color: #ff69b4; -fx-text-fill: white;
-                -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20; -fx-cursor: hand;"""));
     }
 
     @FXML

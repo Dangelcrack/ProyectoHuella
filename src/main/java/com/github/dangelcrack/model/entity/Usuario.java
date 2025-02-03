@@ -31,7 +31,7 @@ public class Usuario {
     @OneToMany(mappedBy = "idUsuario")
     private List<Habito> habitos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "idUsuario")
+    @OneToMany(mappedBy = "idUsuario", fetch = FetchType.EAGER)
     private List<Huella> huellas = new ArrayList<>();
 
     public Integer getId() {

@@ -61,6 +61,16 @@ public class UsuarioDAO extends Usuario{
         return usuario;
     }
 
+    public List<Usuario> leeUsuarios() {
+        List<Usuario> usuarios = null;
+        try (Session session = Connection.getInstance().getSession()) {
+            Query<Usuario> query = session.createQuery("FROM Usuario", Usuario.class);
+            usuarios = query.list();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return usuarios;
+    }
     /**
      * Finds a Usuario entity by its username and password.
      *
@@ -112,6 +122,28 @@ public class UsuarioDAO extends Usuario{
 
         return actualizado;
     }
+    /**
+     * Fetches a list of Usuario entities with their associated Huellas, Actividad, and Categoria eagerly loaded.
+     *
+     * @return a list of Usuario entities with all required relationships initialized.
+     */
+    public List<Usuario> fetchUsuariosWithDetails() {
+        List<Usuario> usuarios = null;
+        try (Session session = Connection.getInstance().getSession()) {
+            Query<Usuario> query = session.createQuery(
+                    "SELECT DISTINCT u FROM Usuario u " +
+                            "LEFT JOIN FETCH u.huellas h " +
+                            "LEFT JOIN FETCH h.idActividad a " +
+                            "LEFT JOIN FETCH a.idCategoria c",
+                    Usuario.class
+            );
+            usuarios = query.list();
+        } catch (Exception e) {
+            e.printStackTrace(); // Add proper logging for error handling
+        }
+        return usuarios;
+    }
+
 
     /**
      * Deletes a specific Usuario entity from the database.

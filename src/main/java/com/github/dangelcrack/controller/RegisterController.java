@@ -44,32 +44,6 @@ public class RegisterController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        loginButton.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
-            loginButton.setStyle("""
-                    -fx-font-size: 14px; -fx-background-color: #005299; -fx-text-fill: white;
-                    -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20;
-                    -fx-cursor: hand; -fx-pref-width: 150; -fx-pref-height: 40;""");
-        });
-
-        loginButton.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
-            loginButton.setStyle("""
-                    -fx-font-size: 14px; -fx-text-fill: white;
-                    -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20;
-                    -fx-cursor: hand; -fx-background-color: #1e90ff; -fx-pref-width: 150; -fx-pref-height: 40;""");
-        });
-        registerButton.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
-            registerButton.setStyle("""
-                    -fx-background-color: #ff3b8d; -fx-font-size: 14px; -fx-text-fill: white;
-                    -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20;
-                    -fx-cursor: hand; -fx-pref-width: 150; -fx-pref-height: 40;""");
-        });
-
-        registerButton.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
-            registerButton.setStyle("""
-                    -fx-background-color: #ff69b4; -fx-font-size: 14px; -fx-text-fill: white;
-                    -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20;
-                    -fx-cursor: hand; -fx-pref-width: 150; -fx-pref-height: 40;""");
-        });
     }
 
 

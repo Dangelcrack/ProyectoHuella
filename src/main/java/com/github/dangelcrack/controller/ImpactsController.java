@@ -100,7 +100,6 @@ public class ImpactsController extends Controller implements Initializable {
         tableViewhuellas.getStylesheets().add(getClass().getResource("/com/github/dangelcrack/css/styles.css").toExternalForm());
         tableViewCalculo.getStylesheets().add(getClass().getResource("/com/github/dangelcrack/css/styles.css").toExternalForm());
 
-
     }
 
     private void configurarColumnasTablaHuellas() {

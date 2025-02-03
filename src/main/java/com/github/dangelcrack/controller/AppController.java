@@ -113,4 +113,8 @@ public class AppController extends Controller implements Initializable {
     private void irCalcularImpacto () throws IOException {
         changeScene(Scenes.IMPACTS,usuario);
     }
+    @FXML
+    private void irRanking () throws IOException {
+        changeScene(Scenes.RANKING,usuario);
+    }
 }

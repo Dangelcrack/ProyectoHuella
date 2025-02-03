@@ -42,6 +42,26 @@ public class HuellaDAO extends Huella{
 
         return creado;
     }
+    /**
+     * Retrieves all Huella entities from the database.
+     *
+     * @return a list of all Huella entities.
+     */
+    public List<Huella> leeHuellas() {
+        List<Huella> huellas = null;
+        try (Session session = Connection.getInstance().getSession()) {
+            Query<Huella> query = session.createQuery("FROM Huella", Huella.class);
+            huellas = query.getResultList();
+            for (Huella huella : huellas) {
+                if (huella.getIdActividad() != null) {
+                    huella.getIdActividad().getNombre();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return huellas;
+    }
 
     /**
      * Updates an existing Huella entity in the database.

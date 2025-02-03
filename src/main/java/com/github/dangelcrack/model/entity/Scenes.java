@@ -12,7 +12,8 @@ public enum Scenes {
     ADDTRACK("/com/github/dangelcrack/view/addtrack.fxml"),
     DELETETRACK("/com/github/dangelcrack/view/deletetrack.fxml"),
     EDITTRACK("/com/github/dangelcrack/view/edittrack.fxml"),
-    IMPACTS("/com/github/dangelcrack/view/impacts.fxml");
+    IMPACTS("/com/github/dangelcrack/view/impacts.fxml"),
+    RANKING("/com/github/dangelcrack/view/ranking.fxml"),;
     private String url;
     Scenes(String url) {this.url = url;}
     public String getURL() {return url;}

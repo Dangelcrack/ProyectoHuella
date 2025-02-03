@@ -9,24 +9,14 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class ActividadDAO {
-    public List<Actividad> listar() {
-        List<Actividad> actividades = null;
-        Transaction tx = null;
-        try(Session session = Connection.getInstance().getSession()) {
-            tx = session.beginTransaction();
-            Query query = session.createQuery("from Actividad");
-             actividades= query.list();
-            tx.commit();
-            return actividades;
-        }catch(Exception e) {
-            if(tx != null) {
-                tx.rollback();
-            }
-            e.printStackTrace();
-        }
-        return actividades;
-    }
     public static ActividadDAO build() {
         return new ActividadDAO();
     }
+
+    public List<Actividad> listar() {
+        try (Session session = Connection.getInstance().getSession()) {
+            return session.createQuery("FROM Actividad", Actividad.class).getResultList();
+        }
+    }
+
 }

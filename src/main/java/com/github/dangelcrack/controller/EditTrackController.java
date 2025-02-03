@@ -7,6 +7,7 @@ import com.github.dangelcrack.model.entity.Actividad;
 import com.github.dangelcrack.model.entity.Categoria;
 import com.github.dangelcrack.model.entity.Huella;
 import com.github.dangelcrack.model.entity.Usuario;
+import com.github.dangelcrack.utils.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -21,10 +22,8 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -32,8 +31,6 @@ public class EditTrackController extends Controller implements Initializable {
 
     @FXML
     private VBox vbox;
-    @FXML
-    private ComboBox<Huella> huellaComboBox;
     @FXML
     private TextField valor;
     @FXML
@@ -47,7 +44,6 @@ public class EditTrackController extends Controller implements Initializable {
 
     private Usuario usuario;
     private HuellaController huellaController;
-    private ObservableList<Huella> huellasObservable;
 
     @Override
     public void onOpen(Usuario usuario, Object input) throws IOException {
@@ -59,7 +55,6 @@ public class EditTrackController extends Controller implements Initializable {
         }
         this.usuario = usuario;
         this.huellaController = (HuellaController) input;
-        cargarHuellasUsuario();
     }
 
     @Override
@@ -70,7 +65,6 @@ public class EditTrackController extends Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cargarCategoriasYActividades();
-        huellaComboBox.setOnAction(event -> rellenarCamposConHuellaSeleccionada());
 
         // Modificar el TextFormatter para aceptar solo números decimales
         valor.setTextFormatter(new TextFormatter<>(change -> {
@@ -83,17 +77,12 @@ public class EditTrackController extends Controller implements Initializable {
     }
 
     private void cargarCategoriasYActividades() {
-        // Cargar datos para el ComboBox de Actividad
         List<Actividad> actividades = ActividadDAO.build().listar();
         ObservableList<Actividad> actividadesObservable = FXCollections.observableArrayList(actividades);
         actividad.setItems(actividadesObservable);
-
-        // Cargar datos para el ComboBox de Categoría
         List<Categoria> categorias = CategoriaDAO.build().listar();
         ObservableList<Categoria> categoriasObservable = FXCollections.observableArrayList(categorias);
         categoria.setItems(categoriasObservable);
-
-        // Configurar CellFactory para mostrar los nombres en los ComboBox
         Callback<ListView<Categoria>, ListCell<Categoria>> categoriaCellFactory = new Callback<>() {
             @Override
             public ListCell<Categoria> call(ListView<Categoria> param) {
@@ -112,7 +101,6 @@ public class EditTrackController extends Controller implements Initializable {
         };
         categoria.setCellFactory(categoriaCellFactory);
         categoria.setButtonCell(categoriaCellFactory.call(null));
-
         Callback<ListView<Actividad>, ListCell<Actividad>> actividadCellFactory = new Callback<>() {
             @Override
             public ListCell<Actividad> call(ListView<Actividad> param) {
@@ -131,8 +119,6 @@ public class EditTrackController extends Controller implements Initializable {
         };
         actividad.setCellFactory(actividadCellFactory);
         actividad.setButtonCell(actividadCellFactory.call(null));
-
-        // Actualizar la unidad cuando se selecciona una categoría
         categoria.setOnAction(event -> {
             Categoria selectedCategoria = categoria.getValue();
             if (selectedCategoria != null && unidad != null) {
@@ -141,106 +127,48 @@ public class EditTrackController extends Controller implements Initializable {
         });
     }
 
-    private void cargarHuellasUsuario() {
-        List<Huella> huellas = HuellaDAO.build().obtenerHuellasPorUsuario(usuario);
-        huellasObservable = FXCollections.observableArrayList(huellas);
-        huellaComboBox.setItems(huellasObservable);
-        huellaComboBox.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(Huella item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item != null && !empty) {
-                    String displayText = "Actividad: " + item.getIdActividad().getNombre();
-                    BigDecimal valor = item.getValor();
-                    LocalDateTime fecha = item.getFecha();
-                    if (valor != null && fecha != null) {
-                        displayText += " - "+item.getUnidad()+": " + valor + " - Fecha: " + fecha.toLocalDate();
-                    }
-
-                    setText(displayText);
-                } else {
-                    setText(null);
-                }
-            }
-        });
-        huellaComboBox.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(Huella item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item != null && !empty) {
-                    String displayText = "Actividad: " + item.getIdActividad().getNombre();
-                    BigDecimal valor = item.getValor();
-                    LocalDateTime fecha = item.getFecha();
-                    if (valor != null && fecha != null) {
-                        displayText += " - "+item.getUnidad()+": " + valor + " - Fecha: " + fecha.toLocalDate();
-                    }
-
-                    setText(displayText);
-                } else {
-                    setText(null);
-                }
-            }
-        });
-    }
-
-
-    private void rellenarCamposConHuellaSeleccionada() {
-        Huella huellaSeleccionada = huellaComboBox.getValue();
-        if (huellaSeleccionada != null) {
-            valor.setText(huellaSeleccionada.getValor().toString());
-            unidad.setText("Unidad: " + huellaSeleccionada.getUnidad());
-
-            // Buscar la categoría en la lista del ComboBox
-            Categoria categoriaSeleccionada = categoria.getItems().stream()
-                    .filter(c -> c.getId().equals(huellaSeleccionada.getIdActividad().getIdCategoria().getId()))
-                    .findFirst()
-                    .orElse(null);
-            categoria.setValue(categoriaSeleccionada);
-
-            // Buscar la actividad en la lista del ComboBox
-            Actividad actividadSeleccionada = actividad.getItems().stream()
-                    .filter(a -> a.getId().equals(huellaSeleccionada.getIdActividad().getId()))
-                    .findFirst()
-                    .orElse(null);
-            actividad.setValue(actividadSeleccionada);
-            fecha.setValue(huellaSeleccionada.getFecha().toLocalDate());
-
-        }
-    }
-
     @FXML
     private void closeWindow(Event event) {
-        Categoria selectedCategoria = categoria.getValue();
-        Actividad selectedActividad = actividad.getValue();
-        LocalDate selectedDate = fecha.getValue();
-        String valorInput = valor.getText();
-
-        if (selectedCategoria == null || selectedActividad == null || selectedDate == null || valorInput.isEmpty()) {
-            throw new IllegalArgumentException("Todos los campos deben estar completos.");
-        }
-
-        BigDecimal valorNumerico;
         try {
-            valorNumerico = new BigDecimal(valorInput);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("El valor debe ser un número válido.");
+            Categoria selectedCategoria = categoria.getValue();
+            Actividad selectedActividad = actividad.getValue();
+            LocalDate selectedDate = fecha.getValue();
+            String valorInput = valor.getText();
+            if (selectedDate != null && selectedDate.isAfter(LocalDate.now())) {
+                throw new IllegalArgumentException("La fecha no puede ser posterior a la fecha de hoy.");
+            }
+
+            if (selectedCategoria == null) {
+                throw new IllegalArgumentException("Debe seleccionar una categoría.");
+            }
+
+            if (selectedActividad == null) {
+                throw new IllegalArgumentException("Debe seleccionar una actividad.");
+            }
+
+            if (selectedDate == null) {
+                throw new IllegalArgumentException("Debe seleccionar una fecha.");
+            }
+
+            if (valorInput == null || valorInput.isEmpty() || !valorInput.matches("\\d+(\\.\\d+)?")) {
+                throw new IllegalArgumentException("El valor debe ser un número válido.");
+            }
+            if (!selectedCategoria.getId().equals(selectedActividad.getIdCategoria().getId())) {
+                throw new IllegalArgumentException("La categoría y la actividad deben tener la misma unidad.");
+            }
+
+            double valorNumerico = Double.parseDouble(valorInput);
+            Huella huella = new Huella();
+            huella.setValor(BigDecimal.valueOf(valorNumerico));
+            huella.setUnidad(selectedCategoria.getUnidad());
+            huella.setIdActividad(selectedActividad);
+            huella.setFecha(LocalDateTime.of(selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDayOfMonth(), 0, 0));
+            huella.setIdUsuario(usuario);
+            huellaController.guardarHuella(huella);
+            ((Node) (event.getSource())).getScene().getWindow().hide();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            Utils.showAlert("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
-
-        LocalDateTime fechaCompleta = selectedDate.atStartOfDay();
-
-        Huella nuevaHuella = new Huella();
-        if (huellaComboBox.getValue() != null) {
-            nuevaHuella.setId(huellaComboBox.getValue().getId());
-        }
-        nuevaHuella.setValor(valorNumerico);
-        nuevaHuella.setUnidad(selectedCategoria.getUnidad());
-        nuevaHuella.setIdActividad(selectedActividad);
-        nuevaHuella.setFecha(fechaCompleta);
-        nuevaHuella.setIdUsuario(usuario);
-
-        huellaController.actualizarHuella(nuevaHuella);
-
-        // Cerrar ventana
-        ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 }

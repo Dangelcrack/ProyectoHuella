@@ -39,8 +39,8 @@
 
         <VBox alignment="CENTER" spacing="30.0" style="-fx-background-color: rgba(0, 0, 0, 0.7); -fx-background-radius: 20; -fx-padding: 30px; -fx-border-color: rgba(0, 200, 255, 0.8); -fx-border-width: 2px; -fx-border-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0, 200, 255, 0.5), 20, 0, 0, 10);">
             <children>
-                <Button fx:id="btnAccion" mnemonicParsing="false" prefWidth="180.0" style="-fx-background-color: linear-gradient(to bottom, #00A8E8, #006494); -fx-text-fill: white; -fx-background-radius: 30; -fx-padding: 12px 30px; -fx-effect: dropshadow(three-pass-box, rgba(0, 200, 255, 0.8), 20, 0, 0, 8); -fx-font-weight: bold;" text="¡RECOMENDACIÓN!" />
-                <Text fx:id="textRecomendacion" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-fill: white; -fx-effect: dropshadow(three-pass-box, rgba(0, 200, 255, 0.7), 20, 0, 0, 10); -fx-text-alignment: CENTER; -fx-wrap-text: true;" textAlignment="CENTER" wrappingWidth="250.0" />
+                <Button fx:id="btnAccion" mnemonicParsing="false" prefWidth="180.0" style="-fx-background-color: linear-gradient(to bottom, #00A8E8, #006494); -fx-text-fill: white; -fx-background-radius: 30; -fx-padding: 12px 30px; -fx-font-weight: bold;" text="¡RECOMENDACIÓN!" />
+                <Text fx:id="textRecomendacion" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-fill: white; -fx-text-alignment: CENTER; -fx-wrap-text: true;" textAlignment="CENTER" wrappingWidth="250.0" />
             </children>
         </VBox>
     </children>

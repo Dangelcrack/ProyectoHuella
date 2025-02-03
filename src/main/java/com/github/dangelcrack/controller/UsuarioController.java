@@ -33,15 +33,7 @@ public class UsuarioController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        guardarButton.setOnMouseEntered(e -> guardarButton.setStyle("""
-                -fx-font-size: 14px; -fx-background-color: #005299; -fx-text-fill: white;
-                -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20; -fx-cursor: hand;"""));
-        guardarButton.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
-            guardarButton.setStyle("""
-                    -fx-font-size: 14px; -fx-text-fill: white;
-                    -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20;
-                    -fx-cursor: hand; -fx-background-color: #1e90ff; -fx-pref-width: 150; -fx-pref-height: 40;""");
-        });
+
     }
 
     @Override

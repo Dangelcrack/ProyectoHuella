@@ -10,24 +10,13 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class CategoriaDAO {
-    public List<Categoria> listar() {
-        List<Categoria> categorias = null;
-        Transaction tx = null;
-        try(Session session = Connection.getInstance().getSession()) {
-            tx = session.beginTransaction();
-            Query query = session.createQuery("from Categoria");
-            categorias= query.list();
-            tx.commit();
-            return categorias;
-        }catch(Exception e) {
-            if(tx != null) {
-                tx.rollback();
-            }
-            e.printStackTrace();
-        }
-        return categorias;
-    }
     public static CategoriaDAO build() {
         return new CategoriaDAO();
+    }
+
+    public List<Categoria> listar() {
+        try (Session session = Connection.getInstance().getSession()) {
+            return session.createQuery("FROM Categoria", Categoria.class).getResultList();
+        }
     }
 }

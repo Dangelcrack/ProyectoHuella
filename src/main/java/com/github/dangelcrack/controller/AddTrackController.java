@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class AddTrackController extends Controller implements Initializable {
 
@@ -42,11 +44,11 @@ public class AddTrackController extends Controller implements Initializable {
 
     @Override
     public void onOpen(Usuario usuario, Object input) throws IOException {
-        if (usuario == null){
+        if (usuario == null) {
             throw new IllegalArgumentException("Usuario no encontrado");
         }
 
-        if(input == null) {
+        if (input == null) {
             throw new IllegalArgumentException("HuellaController no debe ser nulo.");
         }
         this.usuario = usuario;
@@ -118,15 +120,18 @@ public class AddTrackController extends Controller implements Initializable {
         }));
     }
 
-
     @FXML
     private void closeWindow(Event event) {
         try {
-            // Validaciones de los campos
             Categoria selectedCategoria = categoria.getValue();
             Actividad selectedActividad = actividad.getValue();
             LocalDate selectedDate = fecha.getValue();
             String valorInput = valor.getText();
+
+            // Validación de fecha
+            if (selectedDate != null && selectedDate.isAfter(LocalDate.now())) {
+                throw new IllegalArgumentException("La fecha no puede ser posterior a la fecha de hoy.");
+            }
 
             if (selectedCategoria == null) {
                 throw new IllegalArgumentException("Debe seleccionar una categoría.");
@@ -143,6 +148,9 @@ public class AddTrackController extends Controller implements Initializable {
             if (valorInput == null || valorInput.isEmpty() || !valorInput.matches("\\d+(\\.\\d+)?")) {
                 throw new IllegalArgumentException("El valor debe ser un número válido.");
             }
+            if (!selectedCategoria.getId().equals(selectedActividad.getIdCategoria().getId())) {
+                throw new IllegalArgumentException("La categoría y la actividad deben tener la misma unidad.");
+            }
 
             double valorNumerico = Double.parseDouble(valorInput);
             Huella huella = new Huella();
@@ -155,7 +163,8 @@ public class AddTrackController extends Controller implements Initializable {
             ((Node) (event.getSource())).getScene().getWindow().hide();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            Utils.showAlert("Error","Error al guardar la huella",Alert.AlertType.ERROR);
+            Utils.showAlert("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
 }
