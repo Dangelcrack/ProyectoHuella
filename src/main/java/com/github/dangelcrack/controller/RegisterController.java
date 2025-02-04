@@ -7,13 +7,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
-import com.github.dangelcrack.model.dao.UsuarioDAO;
+import com.github.dangelcrack.model.services.UsuarioService;
 import com.github.dangelcrack.model.entity.Usuario;
 import com.github.dangelcrack.model.entity.Scenes;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -41,11 +40,15 @@ public class RegisterController extends Controller implements Initializable {
     @FXML
     private Button loginButton;
 
+    private final UsuarioService usuarioService;
+
+    public RegisterController() {
+        this.usuarioService = new UsuarioService();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
-
 
     @FXML
     private void handleRegister() {
@@ -63,7 +66,7 @@ public class RegisterController extends Controller implements Initializable {
             return;
         }
 
-        if (UsuarioDAO.build().leeUsuario(username) != null) {
+        if (usuarioService.obtenerUsuario(username) != null) {
             Utils.showAlert("Error", "El nombre de usuario ya está en uso.", Alert.AlertType.ERROR);
             return;
         }
@@ -74,7 +77,7 @@ public class RegisterController extends Controller implements Initializable {
         nuevoUsuario.setContraseña(password);
         nuevoUsuario.setFechaRegistro(Instant.now());
 
-        if (UsuarioDAO.build().creaUsuario(nuevoUsuario)) {
+        if (usuarioService.guardarUsuario(nuevoUsuario)) {
             Utils.showAlert("Éxito", "Registro exitoso. Ahora puede iniciar sesión.", Alert.AlertType.INFORMATION);
         } else {
             Utils.showAlert("Error", "No se pudo crear el usuario. Intente nuevamente.", Alert.AlertType.ERROR);
@@ -95,12 +98,10 @@ public class RegisterController extends Controller implements Initializable {
     }
 
     @Override
-    public void onOpen(Usuario usuario,Object input) throws IOException {
-
+    public void onOpen(Usuario usuario, Object input) throws IOException {
     }
 
     @Override
     public void onClose(Object output) {
-
     }
 }

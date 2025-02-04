@@ -16,7 +16,7 @@ public class Huella {
     @JoinColumn(name = "id_usuario")
     private Usuario idUsuario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_actividad")
     private Actividad idActividad;
 

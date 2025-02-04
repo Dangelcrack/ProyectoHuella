@@ -183,9 +183,7 @@ public class EditHabitoController extends Controller implements Initializable {
         nuevoHabito.setIdActividad(selectedActividad);  // Updating idActividad
         nuevoHabito.setUltimaFecha(fechaCompleta);
         nuevoHabito.setIdUsuario(usuario);
-        habitoController.actualizarHabito(nuevoHabito); // Actualizar con el nuevo objeto
-
-        // Cerrar ventana
+        habitoController.actualizarHabito(nuevoHabito);
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 

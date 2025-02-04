@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 
-import com.github.dangelcrack.model.dao.UsuarioDAO;
+import com.github.dangelcrack.model.services.UsuarioService;
 import com.github.dangelcrack.model.entity.Usuario;
 import com.github.dangelcrack.model.entity.Scenes;
 
@@ -35,6 +35,11 @@ public class LoginController extends Controller implements Initializable {
     @FXML
     private Button registerButton;
 
+    private final UsuarioService usuarioService;
+
+    public LoginController() {
+        this.usuarioService = new UsuarioService();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -50,7 +55,7 @@ public class LoginController extends Controller implements Initializable {
             return;
         }
 
-        Usuario usuario = UsuarioDAO.build().findByUsernameAndPassword(username, password);
+        Usuario usuario = usuarioService.obtenerUsuarioPorCredenciales(username, password);
         if (usuario != null) {
             try {
                 App.changeToMainScene(usuario);
@@ -75,9 +80,8 @@ public class LoginController extends Controller implements Initializable {
         stage.show();
     }
 
-
     @Override
-    public void onOpen(Usuario usuario,Object input) throws IOException {
+    public void onOpen(Usuario usuario, Object input) throws IOException {
     }
 
     @Override

@@ -1,8 +1,9 @@
 package com.github.dangelcrack.controller;
 
-import com.github.dangelcrack.model.dao.ActividadDAO;
-import com.github.dangelcrack.model.dao.CategoriaDAO;
 import com.github.dangelcrack.model.entity.*;
+import com.github.dangelcrack.model.services.ActividadService;
+import com.github.dangelcrack.model.services.CategoriaService;
+import com.github.dangelcrack.model.services.HuellaService;
 import com.github.dangelcrack.utils.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,7 +23,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class AddTrackController extends Controller implements Initializable {
 
@@ -38,9 +38,11 @@ public class AddTrackController extends Controller implements Initializable {
     private ComboBox<Actividad> actividad;
     @FXML
     private DatePicker fecha;
-
-    private Usuario usuario;
     private HuellaController huellaController;
+    private Usuario usuario;
+    private HuellaService huellaService;
+    private ActividadService actividadService;
+    private CategoriaService categoriaService;
 
     @Override
     public void onOpen(Usuario usuario, Object input) throws IOException {
@@ -49,26 +51,50 @@ public class AddTrackController extends Controller implements Initializable {
         }
 
         if (input == null) {
-            throw new IllegalArgumentException("HuellaController no debe ser nulo.");
+            throw new IllegalArgumentException("HuellaService no debe ser nulo.");
         }
+
         this.usuario = usuario;
+        this.huellaService = new HuellaService();
+        this.actividadService = new ActividadService(); // Asegúrate de inicializar ActividadService
+        this.categoriaService = new CategoriaService(); // Asegúrate de inicializar CategoriaService
         this.huellaController = (HuellaController) input;
+        // Cargar Actividades y Categorías de manera explícita
+        List<Actividad> actividades = actividadService.listar(); // Usamos el servicio ActividadService
+        ObservableList<Actividad> actividadesObservable = FXCollections.observableArrayList(actividades);
+        actividad.setItems(actividadesObservable);
+
+        List<Categoria> categorias = categoriaService.listar(); // Usamos el servicio CategoriaService
+        ObservableList<Categoria> categoriasObservable = FXCollections.observableArrayList(categorias);
+        categoria.setItems(categoriasObservable);
+
+        // Inicializamos las celdas personalizadas para las ComboBox
+        configurarCeldaComboBoxCategoria(categoria, categoriasObservable);
+        configurarCeldaComboBoxActividad(actividad, actividadesObservable);
     }
 
     @Override
     public void onClose(Object output) {
-        // No se necesita implementación para este caso
+
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        List<Actividad> actividades = ActividadDAO.build().listar();
+        actividadService = new ActividadService();
+        categoriaService = new CategoriaService();
+        List<Actividad> actividades = actividadService.listar();
         ObservableList<Actividad> actividadesObservable = FXCollections.observableArrayList(actividades);
         actividad.setItems(actividadesObservable);
-        List<Categoria> categorias = CategoriaDAO.build().listar();
+        List<Categoria> categorias = categoriaService.listar();
         ObservableList<Categoria> categoriasObservable = FXCollections.observableArrayList(categorias);
         categoria.setItems(categoriasObservable);
-        Callback<ListView<Categoria>, ListCell<Categoria>> categoriaCellFactory = new Callback<>() {
+        configurarCeldaComboBoxCategoria(categoria, categoriasObservable);
+        configurarCeldaComboBoxActividad(actividad, actividadesObservable);
+    }
+
+
+    private void configurarCeldaComboBoxCategoria(ComboBox<Categoria> comboBox, ObservableList<Categoria> observableList) {
+        Callback<ListView<Categoria>, ListCell<Categoria>> categoriaCellFactory = new Callback<ListView<Categoria>, ListCell<Categoria>>() {
             @Override
             public ListCell<Categoria> call(ListView<Categoria> param) {
                 return new ListCell<>() {
@@ -84,10 +110,13 @@ public class AddTrackController extends Controller implements Initializable {
                 };
             }
         };
-        categoria.setCellFactory(categoriaCellFactory);
-        categoria.setButtonCell(categoriaCellFactory.call(null));
 
-        Callback<ListView<Actividad>, ListCell<Actividad>> actividadCellFactory = new Callback<>() {
+        comboBox.setCellFactory(categoriaCellFactory);
+        comboBox.setButtonCell(categoriaCellFactory.call(null));
+    }
+
+    private void configurarCeldaComboBoxActividad(ComboBox<Actividad> comboBox, ObservableList<Actividad> observableList) {
+        Callback<ListView<Actividad>, ListCell<Actividad>> actividadCellFactory = new Callback<ListView<Actividad>, ListCell<Actividad>>() {
             @Override
             public ListCell<Actividad> call(ListView<Actividad> param) {
                 return new ListCell<>() {
@@ -103,21 +132,9 @@ public class AddTrackController extends Controller implements Initializable {
                 };
             }
         };
-        actividad.setCellFactory(actividadCellFactory);
-        actividad.setButtonCell(actividadCellFactory.call(null));
-        categoria.setOnAction(event -> {
-            Categoria selectedCategoria = categoria.getValue();
-            if (selectedCategoria != null && unidad != null) {
-                unidad.setText("Unidad: " + selectedCategoria.getUnidad());
-            }
-        });
-        valor.setTextFormatter(new TextFormatter<>(change -> {
-            String newText = change.getControlNewText();
-            if (newText.matches("\\d*\\.?\\d*")) {
-                return change;
-            }
-            return null;
-        }));
+
+        comboBox.setCellFactory(actividadCellFactory);
+        comboBox.setButtonCell(actividadCellFactory.call(null));
     }
 
     @FXML
@@ -127,12 +144,11 @@ public class AddTrackController extends Controller implements Initializable {
             Actividad selectedActividad = actividad.getValue();
             LocalDate selectedDate = fecha.getValue();
             String valorInput = valor.getText();
-
-            // Validación de fecha
             if (selectedDate != null && selectedDate.isAfter(LocalDate.now())) {
                 throw new IllegalArgumentException("La fecha no puede ser posterior a la fecha de hoy.");
             }
 
+            // Validaciones adicionales
             if (selectedCategoria == null) {
                 throw new IllegalArgumentException("Debe seleccionar una categoría.");
             }
@@ -151,7 +167,6 @@ public class AddTrackController extends Controller implements Initializable {
             if (!selectedCategoria.getId().equals(selectedActividad.getIdCategoria().getId())) {
                 throw new IllegalArgumentException("La categoría y la actividad deben tener la misma unidad.");
             }
-
             double valorNumerico = Double.parseDouble(valorInput);
             Huella huella = new Huella();
             huella.setValor(BigDecimal.valueOf(valorNumerico));
@@ -160,11 +175,11 @@ public class AddTrackController extends Controller implements Initializable {
             huella.setFecha(LocalDateTime.of(selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDayOfMonth(), 0, 0));
             huella.setIdUsuario(usuario);
             huellaController.guardarHuella(huella);
+            huellaService.guardarHuella(huella);
             ((Node) (event.getSource())).getScene().getWindow().hide();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             Utils.showAlert("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-
 }

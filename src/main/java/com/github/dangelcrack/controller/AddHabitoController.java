@@ -1,12 +1,14 @@
 package com.github.dangelcrack.controller;
 
-import com.github.dangelcrack.model.dao.ActividadDAO;
 import com.github.dangelcrack.model.entity.*;
+import com.github.dangelcrack.model.services.ActividadService;
+import com.github.dangelcrack.model.services.HabitoService;
 import com.github.dangelcrack.utils.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -34,6 +36,8 @@ public class AddHabitoController extends Controller implements Initializable {
     private DatePicker fecha;
 
     private Usuario usuario;
+    private HabitoService habitoService;
+    private ActividadService actividadService;
     private HabitoController habitoController;
 
     @Override
@@ -43,24 +47,37 @@ public class AddHabitoController extends Controller implements Initializable {
         }
 
         if (input == null) {
-            throw new IllegalArgumentException("HabitoController no debe ser nulo.");
+            throw new IllegalArgumentException("HabitoService no debe ser nulo.");
         }
+
         this.usuario = usuario;
+        this.habitoService = new HabitoService();
+        this.actividadService = new ActividadService();
         this.habitoController = (HabitoController) input;
-    }
-
-    @Override
-    public void onClose(Object output) {
-        // No se necesita implementación para este caso
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        List<Actividad> actividades = ActividadDAO.build().listar();
+        List<Actividad> actividades = actividadService.listar();
         ObservableList<Actividad> actividadesObservable = FXCollections.observableArrayList(actividades);
         actividad.setItems(actividadesObservable);
         tipoFrecuencia.setItems(FXCollections.observableArrayList(Frecuencies.values()));
 
+        configurarCeldaComboBoxActividad(actividad, actividadesObservable);
+    }
+
+    @Override
+    public void onClose(Object output) {
+        // No se necesita implementación
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        actividadService = new ActividadService();
+        List<Actividad> actividades = actividadService.listar();
+        ObservableList<Actividad> actividadesObservable = FXCollections.observableArrayList(actividades);
+        actividad.setItems(actividadesObservable);
+        tipoFrecuencia.setItems(FXCollections.observableArrayList(Frecuencies.values()));
+        configurarCeldaComboBoxActividad(actividad, actividadesObservable);
+    }
+
+    private void configurarCeldaComboBoxActividad(ComboBox<Actividad> comboBox, ObservableList<Actividad> observableList) {
         Callback<ListView<Actividad>, ListCell<Actividad>> actividadCellFactory = new Callback<>() {
             @Override
             public ListCell<Actividad> call(ListView<Actividad> param) {
@@ -77,16 +94,8 @@ public class AddHabitoController extends Controller implements Initializable {
                 };
             }
         };
-        actividad.setCellFactory(actividadCellFactory);
-        actividad.setButtonCell(actividadCellFactory.call(null));
-
-        frecuencia.setTextFormatter(new TextFormatter<>(change -> {
-            String newText = change.getControlNewText();
-            if (newText.matches("\\d*\\.?\\d*")) {
-                return change;
-            }
-            return null;
-        }));
+        comboBox.setCellFactory(actividadCellFactory);
+        comboBox.setButtonCell(actividadCellFactory.call(null));
     }
 
     @FXML
@@ -95,12 +104,12 @@ public class AddHabitoController extends Controller implements Initializable {
             Actividad selectedActividad = actividad.getValue();
             LocalDate selectedDate = fecha.getValue();
             String valorInput = frecuencia.getText();
-            Frecuencies frecuencia = tipoFrecuencia.getValue();
+            Frecuencies selectedFrecuencia = tipoFrecuencia.getValue();
 
             if (selectedActividad == null) {
                 throw new IllegalArgumentException("Debe seleccionar una actividad.");
             }
-            if (frecuencia == null) {
+            if (selectedFrecuencia == null) {
                 throw new IllegalArgumentException("Debe seleccionar una frecuencia.");
             }
             if (selectedDate == null) {
@@ -111,7 +120,6 @@ public class AddHabitoController extends Controller implements Initializable {
             }
 
             double valorNumerico = Double.parseDouble(valorInput);
-
             Habito habito = new Habito();
             HabitoId habitoId = new HabitoId();
             habitoId.setIdActividad(selectedActividad.getId());
@@ -120,21 +128,15 @@ public class AddHabitoController extends Controller implements Initializable {
             habito.setIdUsuario(usuario);
             habito.setIdActividad(selectedActividad);
             habito.setFrecuencia((int) valorNumerico);
-            habito.setTipo(frecuencia.toString());
-            System.out.println(habito);
+            habito.setTipo(selectedFrecuencia.toString());
             habito.setUltimaFecha(LocalDateTime.of(selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDayOfMonth(), 0, 0));
             habitoController.guardarHabito(habito);
+            habitoService.guardarHabito(habito);
             ((Node) (event.getSource())).getScene().getWindow().hide();
 
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            Utils.showAlert("Error", "Error al guardar el hábito", Alert.AlertType.ERROR);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Utils.showAlert("Error", "Error inesperado: " + e.getMessage(), Alert.AlertType.ERROR);
+            Utils.showAlert("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-
 }
-
