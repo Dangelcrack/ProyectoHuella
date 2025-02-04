@@ -51,6 +51,8 @@
                 <Button fx:id="guardarButton" onAction="#handleGuardar"
                         style="-fx-font-size: 14px; -fx-background-color: rgba(0, 200, 255, 0.8); -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20; -fx-cursor: hand;"
                         text="Guardar Cambios"/>
+                <Button fx:id="backtologin" defaultButton="true" onAction="#backtologin" style="-fx-font-size: 14px; -fx-background-color: red; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 20; -fx-border-radius: 20; -fx-cursor: hand;" text="Cerrar sesión" />
+
             </HBox>
         </VBox>
     </HBox>

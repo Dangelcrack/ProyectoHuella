@@ -61,6 +61,22 @@ public class App extends Application {
         App.stage.setScene(scene);
     }
 
+
+    public static void changeToLoginScene() throws IOException {
+        FXMLLoader loader = new FXMLLoader(App.class.getResource(Scenes.LOGIN.getURL()));
+        Parent root = loader.load();
+        Scene scene = new Scene(root, 1105, 654);
+        try {
+            stage.getIcons().add(new Image(App.class.getResourceAsStream("/com/github/dangelcrack/img/huella.png")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        stage.setTitle("Registro de Huellas");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
     /**
      * Sets the root of the main scene to the specified FXML layout.
      * @param fxml The name of the FXML file to load.

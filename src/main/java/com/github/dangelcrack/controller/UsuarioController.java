@@ -1,5 +1,6 @@
 package com.github.dangelcrack.controller;
 
+import com.github.dangelcrack.App;
 import com.github.dangelcrack.model.services.UsuarioService;
 import com.github.dangelcrack.model.entity.Usuario;
 import javafx.fxml.FXML;
@@ -41,6 +42,10 @@ public class UsuarioController extends Controller implements Initializable {
     /** Botón para guardar los cambios del usuario */
     @FXML
     private Button guardarButton;
+
+    /** Botón para volver al login */
+    @FXML
+    private Button backtologin;
 
     /**
      * Constructor de UsuarioController.
@@ -106,5 +111,15 @@ public class UsuarioController extends Controller implements Initializable {
             // Si ocurre un error, muestra una alerta de error
             Utils.showAlert("Error", "Algo ha fallado", Alert.AlertType.ERROR);
         }
+    }
+
+    /**
+     * Maneja el evento de volver a la pantalla de inicio de sesión.
+     *
+     * @throws IOException Si ocurre un error al cambiar de escena.
+     */
+    @FXML
+    private void backtologin() throws IOException {
+        App.changeToLoginScene();
     }
 }
