@@ -13,8 +13,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-
 import javafx.scene.text.Text;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -23,6 +23,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controlador para la edición de huellas de carbono.
+ */
 public class EditTrackController extends Controller implements Initializable {
 
     @FXML
@@ -46,6 +49,13 @@ public class EditTrackController extends Controller implements Initializable {
     private CategoriaService categoriaService;
     private HuellaController huellaController;
 
+    /**
+     * Método llamado al abrir la ventana de edición de huellas.
+     *
+     * @param usuario El usuario que está editando la huella.
+     * @param input   El controlador de huellas.
+     * @throws IOException Si ocurre un error al abrir la ventana.
+     */
     @Override
     public void onOpen(Usuario usuario, Object input) throws IOException {
         if (usuario == null) {
@@ -59,12 +69,22 @@ public class EditTrackController extends Controller implements Initializable {
         cargarHuellasUsuario();
     }
 
+    /**
+     * Método llamado al cerrar la ventana de edición de huellas.
+     *
+     * @param output El objeto de salida (no utilizado en este caso).
+     */
     @Override
     public void onClose(Object output) {}
 
+    /**
+     * Método de inicialización del controlador.
+     *
+     * @param url            La ubicación relativa del archivo FXML.
+     * @param resourceBundle El recurso de paquete para localizar el archivo FXML.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         this.actividadService = new ActividadService();
         this.categoriaService = new CategoriaService();
         cargarCategoriasYActividades();
@@ -75,6 +95,9 @@ public class EditTrackController extends Controller implements Initializable {
         huellaComboBox.setOnAction(event -> rellenarCampos(huellaComboBox.getValue()));
     }
 
+    /**
+     * Carga las huellas del usuario en el ComboBox.
+     */
     private void cargarHuellasUsuario() {
         List<Huella> huellas = huellaService.obtenerHuellasPorUsuario(usuario);
         ObservableList<Huella> huellasObservable = FXCollections.observableArrayList(huellas);
@@ -99,6 +122,9 @@ public class EditTrackController extends Controller implements Initializable {
         });
     }
 
+    /**
+     * Carga las categorías y actividades en los ComboBox correspondientes.
+     */
     private void cargarCategoriasYActividades() {
         // Obtener datos desde servicios
         List<Actividad> actividades = actividadService.listar();
@@ -149,6 +175,11 @@ public class EditTrackController extends Controller implements Initializable {
         });
     }
 
+    /**
+     * Rellena los campos del formulario con los datos de la huella seleccionada.
+     *
+     * @param huella La huella seleccionada.
+     */
     private void rellenarCampos(Huella huella) {
         if (huella != null) {
             for (Actividad act : actividad.getItems()) {
@@ -169,7 +200,11 @@ public class EditTrackController extends Controller implements Initializable {
         }
     }
 
-
+    /**
+     * Método para cerrar la ventana y guardar los cambios.
+     *
+     * @param event El evento que desencadena el cierre de la ventana.
+     */
     @FXML
     private void closeWindow(Event event) {
         try {

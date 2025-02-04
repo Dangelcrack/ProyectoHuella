@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Data Access Object (DAO) for managing Usuario entities using Hibernate.
  */
-public class UsuarioDAO extends Usuario{
+public class UsuarioDAO extends Usuario {
 
     /**
      * Creates or inserts a new Usuario entity in the database.
@@ -57,20 +57,25 @@ public class UsuarioDAO extends Usuario{
         } catch (Exception e) {
             e.printStackTrace(); // Agregar log de error si se desea
         }
-
         return usuario;
     }
 
+    /**
+     * Reads all Usuario entities from the database.
+     *
+     * @return a list of all Usuario entities.
+     */
     public List<Usuario> leeUsuarios() {
         List<Usuario> usuarios = null;
         try (Session session = Connection.getInstance().getSession()) {
             Query<Usuario> query = session.createQuery("FROM Usuario", Usuario.class);
             usuarios = query.list();
-        }catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace(); // Agregar log de error si se desea
         }
         return usuarios;
     }
+
     /**
      * Finds a Usuario entity by its username and password.
      *
@@ -89,11 +94,10 @@ public class UsuarioDAO extends Usuario{
             query.setParameter("contraseña", contraseña);
             usuario = query.uniqueResult();
         } catch (Exception e) {
-            e.printStackTrace(); // Add proper logging for error
+            e.printStackTrace(); // Agregar log de error si se desea
         }
         return usuario;
     }
-
 
     /**
      * Updates an existing Usuario entity in the database.
@@ -105,9 +109,11 @@ public class UsuarioDAO extends Usuario{
         if (usuarioActualizado == null || usuarioActualizado.getId() == null) {
             throw new IllegalArgumentException("El usuario o su ID no pueden ser nulos.");
         }
+
         boolean actualizado = false;
-        Session session = Connection.getInstance().getSession();;
-        Transaction tx = session.beginTransaction();;
+        Session session = Connection.getInstance().getSession();
+        Transaction tx = session.beginTransaction();
+
         Usuario usuarioExistente = session.get(Usuario.class, usuarioActualizado.getId());
         if (usuarioExistente != null) {
             usuarioExistente.setNombre(usuarioActualizado.getNombre());
@@ -116,12 +122,12 @@ public class UsuarioDAO extends Usuario{
             session.merge(usuarioExistente);
             actualizado = true;
         }
+
         tx.commit();
         session.close();
-
-
         return actualizado;
     }
+
     /**
      * Fetches a list of Usuario entities with their associated Huellas, Actividad, and Categoria eagerly loaded.
      *
@@ -131,19 +137,20 @@ public class UsuarioDAO extends Usuario{
         List<Usuario> usuarios = null;
         try (Session session = Connection.getInstance().getSession()) {
             Query<Usuario> query = session.createQuery(
-                    "SELECT DISTINCT u FROM Usuario u " +
-                            "LEFT JOIN FETCH u.huellas h " +
-                            "LEFT JOIN FETCH h.idActividad a " +
-                            "LEFT JOIN FETCH a.idCategoria c",
+                    "SELECT u FROM Usuario u " +
+                            "JOIN u.huellas h " +
+                            "JOIN h.idActividad a " +
+                            "JOIN a.idCategoria c " +
+                            "GROUP BY u " +
+                            "ORDER BY SUM(h.valor) DESC",
                     Usuario.class
             );
             usuarios = query.list();
         } catch (Exception e) {
-            e.printStackTrace(); // Add proper logging for error handling
+            e.printStackTrace(); // Agregar log de error si se desea
         }
         return usuarios;
     }
-
 
     /**
      * Deletes a specific Usuario entity from the database.
@@ -170,10 +177,14 @@ public class UsuarioDAO extends Usuario{
             }
             e.printStackTrace(); // Agregar log de error si se desea
         }
-
         return eliminado;
     }
 
+    /**
+     * Factory method to create an instance of UsuarioDAO.
+     *
+     * @return a new instance of UsuarioDAO.
+     */
     public static UsuarioDAO build() {
         return new UsuarioDAO();
     }

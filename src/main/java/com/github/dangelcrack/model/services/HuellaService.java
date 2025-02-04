@@ -24,12 +24,12 @@ public class HuellaService {
      * @return true si la huella fue creada exitosamente, false si ya existe.
      */
     public boolean guardarHuella(Huella huella) {
-        if (huella.getId() != null && obtenerHuellaPorId(huella.getId()) != null) {
+        if (huella.getId() != null) {
             return false;
         }
 
         // Si no existe, la creamos
-        return huellaDAO.creaHuella(huella);
+        return huellaDAO.crearHuella(huella);
     }
 
     /**
@@ -40,7 +40,7 @@ public class HuellaService {
      */
     public boolean actualizarHuella(Huella huella) {
         // Validamos si la huella existe antes de actualizar
-        if (huella.getId() == null || obtenerHuellaPorId(huella.getId()) == null) {
+        if (huella.getId() == null) {
             return false;
         }
 
@@ -65,21 +65,5 @@ public class HuellaService {
      */
     public List<Huella> obtenerHuellasPorUsuario(Usuario usuario) {
         return huellaDAO.obtenerHuellasPorUsuario(usuario);
-    }
-
-    /**
-     * Obtiene una huella por su ID.
-     *
-     * @param id el ID de la huella a recuperar.
-     * @return la huella correspondiente al ID o null si no se encuentra.
-     */
-    public Huella obtenerHuellaPorId(Integer id) {
-        List<Huella> huellas = huellaDAO.leeHuellas();
-        for (Huella huella : huellas) {
-            if (huella.getId().equals(id)) {
-                return huella;
-            }
-        }
-        return null;
     }
 }

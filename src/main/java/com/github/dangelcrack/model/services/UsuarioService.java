@@ -40,17 +40,6 @@ public class UsuarioService {
         }
         return UsuarioDAO.actualizarUsuario(usuario);
     }
-
-    /**
-     * Elimina un usuario de la base de datos.
-     *
-     * @param usuario el usuario a eliminar.
-     * @return true si el usuario fue eliminado exitosamente, false si no fue encontrado.
-     */
-    public boolean eliminarUsuario(Usuario usuario) {
-        return usuarioDAO.eliminarUsuario(usuario);
-    }
-
     /**
      * Obtiene un usuario por su ID.
      *
@@ -79,13 +68,5 @@ public class UsuarioService {
     }
     public Usuario obtenerUsuario(String nombre) {
         return usuarioDAO.leeUsuario(nombre);
-    }
-    /**
-     * Obtiene todos los usuarios almacenados en la base de datos.
-     *
-     * @return una lista de todos los usuarios.
-     */
-    public List<Usuario> obtenerTodosLosUsuarios() {
-        return usuarioDAO.leeUsuarios();
     }
 }

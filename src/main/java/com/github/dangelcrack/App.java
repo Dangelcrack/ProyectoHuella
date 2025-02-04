@@ -38,7 +38,12 @@ public class App extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root,1105,654);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Aplicación");
+        primaryStage.setTitle("Registro de Huellas");
+        try {
+            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/com/github/dangelcrack/img/huella.png")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         primaryStage.show();
     }
 

@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 public class ImpactsController extends Controller implements Initializable {
 
+    /** FXML Table Views and Columns */
     @FXML
     private TableView<Huella> tableViewhuellas;
     @FXML
@@ -40,8 +41,10 @@ public class ImpactsController extends Controller implements Initializable {
     private TableColumn<Huella, String> fechaColumnhuellas;
     @FXML
     private TableColumn<Huella, String> cantidadEmitida;
+
     @FXML
     private String ultimaRecomendacion = "";
+
     @FXML
     private TableView<Categoria> tableViewCalculo;
     @FXML
@@ -54,27 +57,44 @@ public class ImpactsController extends Controller implements Initializable {
     private TableColumn<Categoria, String> mediaSemanalColumnCalculo;
     @FXML
     private TableColumn<Categoria, String> mediaMensualColumnCalculo;
+
     @FXML
     private Button btnAccion;
     @FXML
     private Text textRecomendacion;
+
+    /** Observable Lists to store data */
     private ObservableList<Huella> huellas;
     private ObservableList<Categoria> categorias;
 
+    /**
+     * This method is triggered when the view is opened for a user.
+     * It loads the user's "huellas" and associated categories.
+     * @param usuario the user whose data is being displayed
+     * @param input any additional input, currently unused
+     * @throws IOException in case of an error during the loading process
+     */
     @Override
     public void onOpen(Usuario usuario, Object input) throws IOException {
         List<Huella> huellasList = HuellaDAO.build().obtenerHuellasPorUsuario(usuario);
         this.huellas = FXCollections.observableArrayList(huellasList);
         tableViewhuellas.setItems(this.huellas);
+
         List<Categoria> categoriaList = cargarCategoriasRelacionadasConActividades(huellasList);
         this.categorias = FXCollections.observableArrayList(categoriaList);
         tableViewCalculo.setItems(this.categorias);
     }
 
+    /** Method called when the view is closed, currently no actions required */
     @Override
-    public void onClose(Object output) {
-    }
+    public void onClose(Object output) {}
 
+    /**
+     * This method loads the categories related to the activities in the given list of "huellas".
+     * It filters categories that have a matching "unidad" with any of the huellas.
+     * @param huellas the list of huellas
+     * @return a filtered list of categories related to the huellas
+     */
     private List<Categoria> cargarCategoriasRelacionadasConActividades(List<Huella> huellas) {
         List<Categoria> todasLasCategorias = CategoriaDAO.build().listar();
         return todasLasCategorias.stream()
@@ -85,6 +105,12 @@ public class ImpactsController extends Controller implements Initializable {
                 .toList();
     }
 
+    /**
+     * This method calculates the carbon footprint (Huella) for a given "huella" and its emission factor.
+     * @param factorEmision the emission factor for the category
+     * @param huella the specific huella data to calculate
+     * @return the calculated carbon footprint
+     */
     private double calcularHuella(BigDecimal factorEmision, Huella huella) {
         if (factorEmision == null || huella.getValor() == null) {
             return 0;
@@ -92,16 +118,21 @@ public class ImpactsController extends Controller implements Initializable {
         return factorEmision.doubleValue() * huella.getValor().doubleValue();
     }
 
+    /** Initialize the table columns and actions when the controller is loaded */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        configurarColumnasTablaHuellas();
-        configurarColumnasTablaCalculo();
-        btnAccion.setOnAction(event -> handleRecomendacion());
-        tableViewhuellas.getStylesheets().add(getClass().getResource("/com/github/dangelcrack/css/styles.css").toExternalForm());
-        tableViewCalculo.getStylesheets().add(getClass().getResource("/com/github/dangelcrack/css/styles.css").toExternalForm());
+        configurarColumnasTablaHuellas();  // Set up the columns for the Huella table
+        configurarColumnasTablaCalculo();  // Set up the columns for the Calculation table
 
+        btnAccion.setOnAction(event -> handleRecomendacion());  // Action handler for recommendation button
+        tableViewhuellas.getStylesheets().add(getClass().getResource("/com/github/dangelcrack/css/styles.css").toExternalForm());  // Add styles to table
+        tableViewCalculo.getStylesheets().add(getClass().getResource("/com/github/dangelcrack/css/styles.css").toExternalForm());  // Add styles to table
     }
 
+    /**
+     * Configures the columns of the Huella table to display the necessary data.
+     * This includes activity, value, unit, date, and emission quantity.
+     */
     private void configurarColumnasTablaHuellas() {
         actividadColumnhuellas.setCellValueFactory(huella ->
                 new SimpleStringProperty(huella.getValue().getIdActividad() != null ? huella.getValue().getIdActividad().getNombre() : ""));
@@ -122,6 +153,10 @@ public class ImpactsController extends Controller implements Initializable {
         });
     }
 
+    /**
+     * Configures the columns of the Categoria calculation table.
+     * This table calculates the total impact, and average daily, weekly, and monthly emissions for each category.
+     */
     private void configurarColumnasTablaCalculo() {
         categoriaColumnCalculo.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         totalColumnCalculo.setCellValueFactory(categoria -> {
@@ -136,6 +171,12 @@ public class ImpactsController extends Controller implements Initializable {
         mediaMensualColumnCalculo.setCellValueFactory(categoria -> calcularMedia(categoria, 30));
     }
 
+    /**
+     * Calculates the average carbon footprint for a given category over a specified number of days.
+     * @param categoria the category to calculate the average for
+     * @param dias the number of days for the average (1, 7, 30)
+     * @return a SimpleStringProperty representing the calculated average
+     */
     private SimpleStringProperty calcularMedia(TableColumn.CellDataFeatures<Categoria, String> categoria, int dias) {
         LocalDate hoy = LocalDate.now();
         List<Huella> huellasFiltradas = huellas.stream()
@@ -174,7 +215,10 @@ public class ImpactsController extends Controller implements Initializable {
         }
     }
 
-
+    /**
+     * This method handles the recommendation action.
+     * It selects a random recommendation based on the associated categories and displays it.
+     */
     @FXML
     private void handleRecomendacion() {
         if (!huellas.isEmpty()) {
@@ -206,6 +250,5 @@ public class ImpactsController extends Controller implements Initializable {
             textRecomendacion.setText("El usuario no tiene huellas asociadas.");
         }
     }
-
 
 }

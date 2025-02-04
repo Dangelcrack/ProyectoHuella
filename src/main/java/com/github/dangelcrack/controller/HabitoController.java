@@ -1,15 +1,14 @@
+/**
+ * Controlador para la gestión de hábitos en la aplicación.
+ */
 package com.github.dangelcrack.controller;
 
 import com.github.dangelcrack.App;
-import com.github.dangelcrack.model.entity.Actividad;
-import com.github.dangelcrack.model.entity.Habito;
-import com.github.dangelcrack.model.entity.Usuario;
-import com.github.dangelcrack.model.entity.Frecuencies;
-import com.github.dangelcrack.model.entity.Scenes;
+import com.github.dangelcrack.model.entity.*;
 import com.github.dangelcrack.model.services.HabitoService;
 import com.github.dangelcrack.utils.Utils;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,23 +22,34 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class HabitoController extends Controller implements Initializable {
-    @FXML
-    private VBox vBox;
-    @FXML
-    private TableView<Habito> tableView;
-    @FXML
-    private TableColumn<Habito, Integer> frecuenciaColumn;
-    @FXML
-    private TableColumn<Habito, String> tipoColumn;
-    @FXML
-    private TableColumn<Habito, String> fechaColumn;
-    @FXML
-    private TableColumn<Habito, String> actividadColumn;
 
+    /** Contenedor principal en la interfaz gráfica */
+    @FXML private VBox vBox;
+
+    /** Tabla para mostrar los hábitos */
+    @FXML private TableView<Habito> tableView;
+
+    /** Columnas de la tabla */
+    @FXML private TableColumn<Habito, Integer> frecuenciaColumn;
+    @FXML private TableColumn<Habito, String> tipoColumn;
+    @FXML private TableColumn<Habito, String> fechaColumn;
+    @FXML private TableColumn<Habito, String> actividadColumn;
+
+    /** Lista observable de hábitos */
     private ObservableList<Habito> habitos;
+
+    /** Usuario actual */
     private Usuario usuario;
+
+    /** Servicio para la gestión de hábitos */
     private HabitoService habitoService;
 
+    /**
+     * Método llamado al abrir la ventana.
+     * @param usuario Usuario actual.
+     * @param input Datos de entrada.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
     @Override
     public void onOpen(Usuario usuario, Object input) throws IOException {
         this.usuario = usuario;
@@ -47,11 +57,18 @@ public class HabitoController extends Controller implements Initializable {
         cargarHabitos();
     }
 
+    /**
+     * Método llamado al cerrar la ventana.
+     * @param output Datos de salida.
+     */
     @Override
     public void onClose(Object output) {
         // Lógica adicional si es necesaria al cerrar la ventana
     }
 
+    /**
+     * Carga los hábitos del usuario en la tabla.
+     */
     private void cargarHabitos() {
         tableView.getItems().clear();
         List<Habito> habitosList = habitoService.obtenerHabitosPorUsuario(usuario);
@@ -59,6 +76,10 @@ public class HabitoController extends Controller implements Initializable {
         tableView.setItems(this.habitos);
     }
 
+    /**
+     * Guarda un nuevo hábito en la lista.
+     * @param nuevoHabito Hábito a guardar.
+     */
     public void guardarHabito(Habito nuevoHabito) {
         if (nuevoHabito != null) {
             this.habitos.add(nuevoHabito);
@@ -68,6 +89,10 @@ public class HabitoController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Actualiza un hábito existente.
+     * @param nuevoHabito Hábito actualizado.
+     */
     public void actualizarHabito(Habito nuevoHabito) {
         if (nuevoHabito != null && habitoService.actualizarHabito(nuevoHabito)) {
             cargarHabitos();
@@ -76,6 +101,9 @@ public class HabitoController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Inicializa la configuración del controlador.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         configurarColumnas();
@@ -83,6 +111,9 @@ public class HabitoController extends Controller implements Initializable {
         tableView.getStylesheets().add(getClass().getResource("/com/github/dangelcrack/css/styles.css").toExternalForm());
     }
 
+    /**
+     * Configura las columnas de la tabla de hábitos.
+     */
     private void configurarColumnas() {
         actividadColumn.setCellValueFactory(habito -> {
             Actividad actividad = habito.getValue().getIdActividad();
@@ -102,6 +133,10 @@ public class HabitoController extends Controller implements Initializable {
         ));
     }
 
+    /**
+     * Abre la ventana para añadir un nuevo hábito.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
     @FXML
     private void addHabito() throws IOException {
         if (App.currentController == null) {
@@ -110,6 +145,9 @@ public class HabitoController extends Controller implements Initializable {
         App.currentController.openModal(Scenes.ADDHABITO, "Añadiendo Hábito...", this, null);
     }
 
+    /**
+     * Elimina el hábito seleccionado.
+     */
     @FXML
     private void deleteHabito() {
         Habito selectedHabito = tableView.getSelectionModel().getSelectedItem();
@@ -133,6 +171,10 @@ public class HabitoController extends Controller implements Initializable {
         });
     }
 
+    /**
+     * Abre la ventana para editar un hábito.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
     @FXML
     private void editHabito() throws IOException {
         App.currentController.openModal(Scenes.EDITHABITO, "Editando Hábito...", this, null);
