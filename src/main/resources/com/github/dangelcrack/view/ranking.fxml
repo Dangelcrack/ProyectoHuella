@@ -3,16 +3,35 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <VBox fx:id="vBox" alignment="CENTER" prefHeight="347.0" prefWidth="729.0" spacing="20.0" style="-fx-background-color: radial-gradient(center 50% 50%, radius 60%, #002147, #000000);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.dangelcrack.controller.RankingController">
     <children>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/glaceon.png" />
+               </image>
+            </ImageView>
+            <Text fill="WHITE" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Ranking" textAlignment="CENTER">
+               <font>
+                  <Font name="Lucida Sans Unicode" size="96.0" />
+               </font>
+            </Text>
+         </children>
+      </HBox>
         <TableView fx:id="tableView" editable="true" maxWidth="1000.0" minWidth="1000.0" prefWidth="1000.0" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-color: transparent; -fx-border-color: rgba(0,200,255,0.6);">
             <columns>
-                <TableColumn fx:id="posicionColumn" prefWidth="250.0" resizable="false"  text="Puesto" />
-                <TableColumn fx:id="nameColumn" prefWidth="250.0" resizable="false"  text="Nombre" />
-                <TableColumn fx:id="cantidadColumn" prefWidth="250.0" resizable="false"  text="Cantidad Emitida" />
-                <TableColumn fx:id="cantidadDeHuellas" prefWidth="250.0" resizable="false"  text="Cantidad Huellas" />
+                <TableColumn fx:id="posicionColumn" prefWidth="250.0" resizable="false" text="Puesto" />
+                <TableColumn fx:id="nameColumn" prefWidth="250.0" resizable="false" text="Nombre" />
+                <TableColumn fx:id="cantidadColumn" prefWidth="250.0" resizable="false" text="Cantidad Emitida" />
+                <TableColumn fx:id="cantidadDeHuellas" prefWidth="250.0" resizable="false" text="Cantidad Huellas" />
             </columns>
         </TableView>
     </children>

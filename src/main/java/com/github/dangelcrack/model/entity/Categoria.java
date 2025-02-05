@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "categoria", schema = "eco")
@@ -24,7 +26,7 @@ public class Categoria {
     private String unidad;
 
     @OneToMany(mappedBy = "idCategoria")
-    private List<Actividad> actividads = new ArrayList<>();
+    private Set<Actividad> actividads = new HashSet<>();
 
     @OneToMany(mappedBy = "idCategoria")
     private List<Recomendacion> recomendacions = new ArrayList<>();
@@ -61,11 +63,11 @@ public class Categoria {
         this.unidad = unidad;
     }
 
-    public List<Actividad> getActividads() {
+    public Set<Actividad> getActividads() {
         return actividads;
     }
 
-    public void setActividads(List<Actividad> actividads) {
+    public void setActividads(Set<Actividad> actividads) {
         this.actividads = actividads;
     }
 

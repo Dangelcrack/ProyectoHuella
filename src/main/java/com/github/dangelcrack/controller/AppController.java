@@ -151,6 +151,10 @@ public class AppController extends Controller implements Initializable {
     private void irCalcularImpacto () throws IOException {
         changeScene(Scenes.IMPACTS,usuario);
     }
+    @FXML
+    private void irMostrarGraficos () throws IOException {
+        changeScene(Scenes.GRAFICOS, usuario);
+    }
 
     /**
      * Cambia la escena a la sección de ranking.

@@ -27,6 +27,7 @@
             <Menu mnemonicParsing="false" text="Impacto">
                 <items>
                     <MenuItem mnemonicParsing="false" onAction="#irCalcularImpacto" text="Calcular mi impacto" />
+                    <MenuItem mnemonicParsing="false" onAction="#irMostrarGraficos" text="Mostrar gráfica" />
                 </items>
             </Menu>
                 <Menu mnemonicParsing="false" text="Ranking">

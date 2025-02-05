@@ -35,3 +35,52 @@
     -fx-background-color: white;
     -fx-text-fill: black;
 }
+/* styles.css */
+.chart-title {
+    -fx-text-fill: white;
+}
+
+.axis-label {
+    -fx-text-fill: white;
+}
+
+.chart-legend {
+    -fx-text-fill: white;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: #505050;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: #505050;
+}
+
+.axis {
+    -fx-tick-label-fill: white;
+}
+
+.chart-series-line {
+    -fx-stroke: white;
+}
+
+.default-color0.chart-bar {
+    -fx-bar-fill: #00A8E8;
+}
+
+.default-color1.chart-bar {
+    -fx-bar-fill: #006494;
+}
+
+.default-color2.chart-bar {
+    -fx-bar-fill: #003366;
+}
+
+.chart-pie-label {
+    -fx-fill: white;
+    -fx-font-size: 12px;
+}
