@@ -34,9 +34,9 @@ public class UsuarioDAO extends Usuario {
             creado = true;
         } catch (Exception e) {
             if (transaction != null) {
-                transaction.rollback(); // Rollback si ocurre un error
+                transaction.rollback();
             }
-            e.printStackTrace(); // Agregar log de error si se desea
+            e.printStackTrace();
         }
 
         return creado;
@@ -55,7 +55,7 @@ public class UsuarioDAO extends Usuario {
             query.setParameter("nombre", nombre);
             usuario = query.uniqueResult();
         } catch (Exception e) {
-            e.printStackTrace(); // Agregar log de error si se desea
+            e.printStackTrace();
         }
         return usuario;
     }
@@ -71,7 +71,7 @@ public class UsuarioDAO extends Usuario {
             Query<Usuario> query = session.createQuery("FROM Usuario", Usuario.class);
             usuarios = query.list();
         } catch (Exception e) {
-            e.printStackTrace(); // Agregar log de error si se desea
+            e.printStackTrace();
         }
         return usuarios;
     }
@@ -94,7 +94,7 @@ public class UsuarioDAO extends Usuario {
             query.setParameter("contraseña", contraseña);
             usuario = query.uniqueResult();
         } catch (Exception e) {
-            e.printStackTrace(); // Agregar log de error si se desea
+            e.printStackTrace();
         }
         return usuario;
     }
@@ -147,38 +147,11 @@ public class UsuarioDAO extends Usuario {
             );
             usuarios = query.list();
         } catch (Exception e) {
-            e.printStackTrace(); // Agregar log de error si se desea
+            e.printStackTrace();
         }
         return usuarios;
     }
 
-    /**
-     * Deletes a specific Usuario entity from the database.
-     *
-     * @param usuario the Usuario entity to delete.
-     * @return true if the entity was successfully deleted, false otherwise.
-     */
-    public boolean eliminarUsuario(Usuario usuario) {
-        boolean eliminado = false;
-        Transaction transaction = null;
-        try (Session session = Connection.getInstance().getSession()) {
-            transaction = session.beginTransaction();
-            Query<Usuario> query = session.createQuery("FROM Usuario WHERE nombre = :nombre", Usuario.class);
-            query.setParameter("nombre", usuario.getNombre());
-            Usuario usuarioExistente = query.uniqueResult();
-            if (usuarioExistente != null) {
-                session.remove(usuarioExistente);
-                eliminado = true;
-            }
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback(); // Rollback si ocurre un error
-            }
-            e.printStackTrace(); // Agregar log de error si se desea
-        }
-        return eliminado;
-    }
 
     /**
      * Factory method to create an instance of UsuarioDAO.

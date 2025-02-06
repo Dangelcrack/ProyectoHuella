@@ -26,7 +26,6 @@ public class ActividadDAO {
      * @return Una lista de todas las actividades.
      */
     public List<Actividad> listar() {
-        // Utiliza la sesión de Hibernate para obtener la lista de actividades
         try (Session session = Connection.getInstance().getSession()) {
             // Ejecuta una consulta HQL para obtener todas las actividades
             return session.createQuery("FROM Actividad", Actividad.class).getResultList();

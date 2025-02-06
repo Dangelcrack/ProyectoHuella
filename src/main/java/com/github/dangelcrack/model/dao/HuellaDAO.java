@@ -6,10 +6,6 @@ import com.github.dangelcrack.model.entity.Usuario;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -104,127 +100,7 @@ public class HuellaDAO {
         }
     }
 
-    /**
-     * Obtiene la cantidad de CO₂ emitida para una huella específica.
-     *
-     * @param huellaId el ID de la huella.
-     * @return la cantidad de CO₂ emitida.
-     */
-    public double obtenerCantidadEmitida(Integer huellaId) {
-        try (Session session = Connection.getInstance().getSession()) {
-            Query<BigDecimal> query = session.createQuery(
-                    "SELECT c.factorEmision * h.valor FROM Huella h " +
-                            "JOIN Categoria c ON h.unidad = c.unidad " +
-                            "WHERE h.id = :huellaId", BigDecimal.class
-            );
-            query.setParameter("huellaId", huellaId);
-            BigDecimal result = query.uniqueResult();
-            return result != null ? result.doubleValue() : 0.0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0.0;
-        }
-    }
 
-    /**
-     * Obtiene el impacto total de CO₂ para una categoría específica.
-     *
-     * @param categoriaId el ID de la categoría.
-     * @return el impacto total de CO₂.
-     */
-    public Double obtenerImpactoTotalPorCategoria(Integer categoriaId) {
-        try (Session session = Connection.getInstance().getSession()) {
-            Query<BigDecimal> query = session.createQuery(
-                    "SELECT SUM(c.factorEmision * h.valor) FROM Huella h " +
-                            "JOIN Categoria c ON h.unidad = c.unidad " +
-                            "WHERE c.id = :categoriaId", BigDecimal.class
-            );
-            query.setParameter("categoriaId", categoriaId);
-            BigDecimal result = query.uniqueResult();
-            return result != null ? result.doubleValue() : 0.0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0.0;
-        }
-    }
-
-    /**
-     * Obtiene la media de CO₂ emitido para una categoría específica en un número de días.
-     *
-     * @param categoriaId el ID de la categoría.
-     * @param dias        el número de días para el cálculo.
-     * @return la media de CO₂ emitido.
-     */
-    public Double obtenerMediaPorCategoria(Integer categoriaId, int dias) {
-        try (Session session = Connection.getInstance().getSession()) {
-            LocalDateTime fechaLimite = LocalDate.now().minusDays(dias).atStartOfDay();
-            Query<Double> query = session.createQuery(
-                    "SELECT CAST(AVG(c.factorEmision * h.valor) AS double) FROM Huella h " +
-                            "JOIN Categoria c ON h.unidad = c.unidad " +
-                            "WHERE c.id = :categoriaId AND h.fecha >= :fechaLimite", Double.class);
-            query.setParameter("categoriaId", categoriaId);
-            query.setParameter("fechaLimite", fechaLimite);  // Ahora pasando LocalDateTime
-            return query.uniqueResult();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0.0; // Retorna 0.0 si ocurre alguna excepción
-        }
-    }
-
-    /**
-     * Obtiene la media de CO₂ emitido para una categoría específica, considerando solo los días en los que hay huellas.
-     *
-     * @param categoriaId el ID de la categoría.
-     * @return la media de CO₂ emitido por día, considerando solo los días con huellas.
-     */
-    public Double obtenerMediaDiariaPorCategoria(Integer categoriaId) {
-        try (Session session = Connection.getInstance().getSession()) {
-            // Consulta para obtener la suma de emisiones y la cantidad de huellas por día
-            Query<Object[]> query = session.createQuery(
-                    "SELECT h.fecha, SUM(c.factorEmision * h.valor), COUNT(h) " +
-                            "FROM Huella h " +
-                            "JOIN Categoria c ON h.unidad = c.unidad " +
-                            "WHERE c.id = :categoriaId " +
-                            "GROUP BY h.fecha", Object[].class);
-
-            query.setParameter("categoriaId", categoriaId);
-
-            // Ejecutamos la consulta
-            List<Object[]> resultList = query.getResultList();
-
-            if (resultList == null || resultList.isEmpty()) {
-                return 0.0; // Si no hay resultados, retornamos 0.0
-            }
-
-            // Calcular el promedio de CO₂ por día, considerando solo días con huellas
-            double totalPromedioDiario = 0.0;
-            int cantidadDeDiasConHuellas = 0;
-
-            for (Object[] result : resultList) {
-                LocalDate fecha = ((LocalDateTime) result[0]).toLocalDate(); // Convertir a LocalDate
-                Double sumaEmisiones = ((BigDecimal) result[1]).doubleValue();
-                Long cantidadHuellas = (Long) result[2];
-
-                // Si hay huellas para ese día, calculamos el promedio de ese día
-                if (cantidadHuellas > 0) {
-                    Double promedioDiario = sumaEmisiones / cantidadHuellas;
-                    totalPromedioDiario += promedioDiario;
-                    cantidadDeDiasConHuellas++;
-                }
-            }
-
-            // Si no hay días con huellas, devolvemos 0.0
-            if (cantidadDeDiasConHuellas == 0) {
-                return 0.0;
-            }
-
-            // Promedio final de todos los días con huellas
-            return totalPromedioDiario / cantidadDeDiasConHuellas;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0.0; // Si ocurre un error, retornamos 0.0
-        }
-    }
     /**
      * Método de fábrica para crear una instancia de HuellaDAO.
      *

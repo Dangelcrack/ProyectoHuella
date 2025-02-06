@@ -51,18 +51,14 @@ public class HabitoDAO {
      */
     public boolean actualizarHabito(Habito habitoActualizado) {
         boolean actualizado = false;
-        // Inicia la sesión y la transacción
         Session session = Connection.getInstance().getSession();
         Transaction transaction = session.beginTransaction();
-        // Obtiene el Habito existente a partir de su ID
         Habito habito = session.get(Habito.class, habitoActualizado.getId());
         if (habito != null) {
-            // Actualiza el Habito con los nuevos datos
             habito = habitoActualizado;
             session.merge(habito);
             actualizado = true;
         }
-        // Finaliza la transacción
         transaction.commit();
         session.close();
         return actualizado;
@@ -78,19 +74,15 @@ public class HabitoDAO {
         boolean eliminado = false;
         Transaction transaction = null;
         try (Session session = Connection.getInstance().getSession()) {
-            // Inicia la transacción
             transaction = session.beginTransaction();
             // Obtiene el Habito a partir de su ID
             Habito habitoExistente = session.get(Habito.class, habito.getId());
             if (habitoExistente != null) {
-                // Elimina el Habito de la base de datos
                 session.remove(habitoExistente);
                 eliminado = true;
             }
-            // Finaliza la transacción
             transaction.commit();
         } catch (Exception e) {
-            // En caso de error, realiza un rollback
             if (transaction != null) {
                 transaction.rollback();
             }
@@ -112,13 +104,11 @@ public class HabitoDAO {
             Query<Habito> query = session.createQuery(
                     "SELECT h FROM Habito h " +
                             "JOIN FETCH h.idActividad " +
-                            "JOIN FETCH h.idUsuario " +  // Carga usuario si es necesario
+                            "JOIN FETCH h.idUsuario " +
                             "WHERE h.idUsuario = :usuario",
                     Habito.class
             );
-            // Establece el parámetro de la consulta
             query.setParameter("usuario", usuario);
-            // Ejecuta la consulta y obtiene los resultados
             habitos = query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();

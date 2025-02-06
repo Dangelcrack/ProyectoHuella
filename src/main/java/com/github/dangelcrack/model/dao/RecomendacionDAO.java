@@ -27,10 +27,16 @@ public class RecomendacionDAO {
         Transaction tx = null;
         try (Session session = Connection.getInstance().getSession()) {
             tx = session.beginTransaction();
-            String hql = "SELECT r FROM Recomendacion r JOIN r.idCategoria c WHERE c.unidad = (SELECT unidad FROM Categoria WHERE id = :idUnidad)";
+
+            // Consulta HQL para obtener las recomendaciones asociadas a la unidad de una categoría específica
+            String hql = "SELECT r FROM Recomendacion r " +
+                    "JOIN r.idCategoria c WHERE c.unidad = " +
+                    "(SELECT unidad FROM Categoria WHERE id = :idUnidad)";
+
             Query<Recomendacion> query = session.createQuery(hql, Recomendacion.class);
             query.setParameter("idUnidad", idUnidad);
             recomendacionesFiltradas = query.list();
+
             tx.commit();
         } catch (Exception e) {
             if (tx != null) {
@@ -40,19 +46,25 @@ public class RecomendacionDAO {
         }
         return recomendacionesFiltradas;
     }
+
     public List<Recomendacion> obtenerRecomendacionesPorUnidades(List<String> unidades) {
         try (Session session = Connection.getInstance().getSession()) {
+
+            // Consulta HQL para obtener recomendaciones filtrando por la unidad de sus categorías
             Query<Recomendacion> query = session.createQuery(
                     "SELECT r FROM Recomendacion r " +
-                            "JOIN Categoria c ON r.idCategoria.id = c.id " +
-                            "WHERE c.unidad IN :unidades", Recomendacion.class);
+                            "JOIN Categoria c ON r.idCategoria.id = c.id " + // Se une la tabla de categoría con recomendación
+                            "WHERE c.unidad IN :unidades", Recomendacion.class); // Filtra por unidades especificadas
+
             query.setParameter("unidades", unidades);
             return query.getResultList();
+
         } catch (Exception e) {
             e.printStackTrace();
             return List.of();
         }
     }
+
 
     /**
      * Método de fábrica para crear una instancia de RecomendacionDAO.

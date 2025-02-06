@@ -28,7 +28,6 @@ public class CategoriaDAO {
      * @return Una lista de todas las categorías.
      */
     public List<Categoria> listar() {
-        // Utiliza la sesión de Hibernate para obtener la lista de categorías
         try (Session session = Connection.getInstance().getSession()) {
             // Ejecuta una consulta HQL para obtener todas las categorías
             return session.createQuery("FROM Categoria", Categoria.class).getResultList();
