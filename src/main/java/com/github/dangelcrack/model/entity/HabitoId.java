@@ -9,7 +9,6 @@ public class HabitoId implements Serializable {
     private Integer idUsuario;
     private Integer idActividad;
 
-    // Getters y setters
     public Integer getIdUsuario() {
         return idUsuario;
     }
@@ -26,7 +25,6 @@ public class HabitoId implements Serializable {
         this.idActividad = idActividad;
     }
 
-    // Implementación de equals y hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

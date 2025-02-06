@@ -21,9 +21,14 @@ public class HabitoService {
      * Guarda un hábito en la base de datos.
      *
      * @param habito el hábito a insertar.
+     * @return
      */
-    public void guardarHabito(Habito habito) {
-        habitoDAO.crearHabito(habito);
+    public boolean guardarHabito(Habito habito) {
+        boolean result = false;
+        if(habitoDAO.crearHabito(habito)){
+            result = true;
+        }
+        return result;
     }
 
     /**

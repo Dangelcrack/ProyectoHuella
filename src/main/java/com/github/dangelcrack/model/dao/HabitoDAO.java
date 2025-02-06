@@ -20,20 +20,18 @@ public class HabitoDAO {
      * Si el Habito ya existe, no se duplicará.
      *
      * @param habito la entidad Habito a crear.
+     * @return
      */
-    public void crearHabito(Habito habito) {
-        // Inicia una sesión de Hibernate
+    public boolean crearHabito(Habito habito) {
+        boolean resultado = false;
         Session session = Connection.getInstance().getSession();
         Transaction transaction = null;
         try {
-            // Inicia la transacción
             transaction = session.beginTransaction();
-            // Guarda la entidad Habito en la base de datos
             session.save(habito);
-            // Comete la transacción
             transaction.commit();
+            resultado = true;
         } catch (Exception e) {
-            // En caso de error, realiza un rollback
             if (transaction != null) {
                 transaction.rollback();
             }
@@ -42,6 +40,7 @@ public class HabitoDAO {
             // Cierra la sesión
             session.close();
         }
+        return resultado;
     }
 
     /**

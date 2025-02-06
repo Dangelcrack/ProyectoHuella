@@ -1,8 +1,6 @@
 package com.github.dangelcrack.model.entity;
 
 import jakarta.persistence.*;
-
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity

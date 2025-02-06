@@ -154,10 +154,10 @@ public class AddHabitoController extends Controller implements Initializable {
             habito.setTipo(selectedFrecuencia.toString());
             habito.setUltimaFecha(LocalDateTime.of(selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDayOfMonth(), 0, 0));
 
-            // Guardar el hábito en la base de datos
+            if (!habitoService.guardarHabito(habito)) {
+                throw new IllegalArgumentException("No se pudo añadir el hábito.(Ya existe)");
+            }
             habitoController.guardarHabito(habito);
-            habitoService.guardarHabito(habito);
-
             // Cerrar la ventana
             ((Node) (event.getSource())).getScene().getWindow().hide();
         } catch (IllegalArgumentException e) {

@@ -1,21 +1,17 @@
 package com.github.dangelcrack.controller;
 
-import com.github.dangelcrack.model.dao.CategoriaDAO;
-import com.github.dangelcrack.model.dao.HuellaDAO;
-import com.github.dangelcrack.model.dao.RecomendacionDAO;
 import com.github.dangelcrack.model.entity.Categoria;
 import com.github.dangelcrack.model.entity.Huella;
 import com.github.dangelcrack.model.entity.Recomendacion;
 import com.github.dangelcrack.model.entity.Usuario;
+import com.github.dangelcrack.model.services.CategoriaService;
 import com.github.dangelcrack.model.services.HuellaService;
-import javafx.beans.property.SimpleStringProperty;
+import com.github.dangelcrack.model.services.RecomendacionService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
@@ -25,10 +21,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GraficosController extends Controller implements Initializable {
 
@@ -54,16 +49,18 @@ public class GraficosController extends Controller implements Initializable {
     private ObservableList<Huella> huellas;
     private ObservableList<Categoria> categorias;
 
-    private HuellaService huellaService = new HuellaService(); // Creamos una instancia del servicio
+    private HuellaService huellaService;
+    private CategoriaService categoriaService;
+    private RecomendacionService recomendacionService;
 
     @Override
     public void onOpen(Usuario usuario, Object input) throws IOException {
-        // Obtener huellas y categorías relacionadas usando el servicio
+        huellaService = new HuellaService();
+        categoriaService = new CategoriaService();
+        recomendacionService = new RecomendacionService();
         huellas = FXCollections.observableArrayList(huellaService.obtenerHuellasPorUsuario(usuario));
         categorias = FXCollections.observableArrayList(cargarCategoriasRelacionadasConActividades(huellas));
-
-        // Actualizar gráficos
-        actualizarGraficos();
+        actualizarGraficos(1);
     }
 
     @Override
@@ -84,9 +81,8 @@ public class GraficosController extends Controller implements Initializable {
      * @return Lista de categorías relacionadas
      */
     private List<Categoria> cargarCategoriasRelacionadasConActividades(List<Huella> huellas) {
-        List<Categoria> todasLasCategorias = CategoriaDAO.build().listar();
+        List<Categoria> todasLasCategorias = categoriaService.listar();
         List<Categoria> categoriasRelacionadas = new ArrayList<>();
-
         for (Categoria categoria : todasLasCategorias) {
             for (Huella huella : huellas) {
                 if (huella.getUnidad() != null && huella.getUnidad().equalsIgnoreCase(categoria.getUnidad())) {
@@ -114,24 +110,28 @@ public class GraficosController extends Controller implements Initializable {
     }
 
     /**
-     * Actualiza los gráficos de barras y circular.
+     * Actualiza los gráficos de barras y circular con la media de las huellas.
+     *
+     * @param dias Número de días para calcular la media
      */
-    private void actualizarGraficos() {
+    private void actualizarGraficos(int dias) {
         barChart.getData().clear();
         pieChart.getData().clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Huella de Carbono");
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-
         for (Categoria categoria : categorias) {
             double totalHuella = 0;
+            int count = 0;
             for (Huella huella : huellas) {
                 if (huella.getUnidad().equalsIgnoreCase(categoria.getUnidad())) {
                     totalHuella += calcularHuella(categoria.getFactorEmision(), huella);
+                    count++;
                 }
             }
-            series.getData().add(new XYChart.Data<>(categoria.getNombre(), totalHuella));
-            pieChartData.add(new PieChart.Data(categoria.getNombre(), totalHuella));
+            double mediaHuella = count > 0 ? totalHuella / (dias * count) : 0;
+            series.getData().add(new XYChart.Data<>(categoria.getNombre(), mediaHuella));
+            pieChartData.add(new PieChart.Data(categoria.getNombre(), mediaHuella));
         }
         barChart.getData().add(series);
         pieChart.setData(pieChartData);
@@ -142,66 +142,37 @@ public class GraficosController extends Controller implements Initializable {
      */
     @FXML
     private void handleRecomendacion() {
-        if (huellas.isEmpty()) {
-            textRecomendacion.setText("El usuario no tiene huellas asociadas.");
-            return;
-        }
+        if (!huellas.isEmpty()) {
+            List<String> unidades = huellas.stream()
+                    .map(Huella::getUnidad)
+                    .distinct()
+                    .collect(Collectors.toList());
 
-        // Obtener categorías asociadas a las huellas
-        Set<String> unidades = new HashSet<>();
-        for (Huella huella : huellas) {
-            unidades.add(huella.getUnidad());
-        }
+            List<Recomendacion> recomendaciones = recomendacionService.obtenerRecomendacionesPorUnidades(unidades);
 
-        List<Categoria> categoriasAsociadas = new ArrayList<>();
-        for (String unidad : unidades) {
-            for (Categoria categoria : categorias) {
-                if (categoria.getUnidad().equalsIgnoreCase(unidad)) {
-                    categoriasAsociadas.add(categoria);
-                    break;
-                }
+            if (!recomendaciones.isEmpty()) {
+                Recomendacion recomendacion = recomendaciones.get((int) (Math.random() * recomendaciones.size()));
+                ultimaRecomendacion = recomendacion.getDescripcion();
+                textRecomendacion.setText(ultimaRecomendacion);
+            } else {
+                textRecomendacion.setText("No hay recomendaciones disponibles.");
             }
+        } else {
+            textRecomendacion.setText("El usuario no tiene huellas asociadas.");
         }
-
-        if (categoriasAsociadas.isEmpty()) {
-            textRecomendacion.setText("No hay recomendaciones disponibles.");
-            return;
-        }
-
-        // Obtener recomendaciones
-        RecomendacionDAO recomendacionDAO = RecomendacionDAO.build();
-        List<Recomendacion> recomendaciones = new ArrayList<>();
-        for (Categoria categoria : categoriasAsociadas) {
-            recomendaciones.addAll(recomendacionDAO.filtrarPorHuella(categoria.getId()));
-        }
-
-        if (recomendaciones.isEmpty()) {
-            textRecomendacion.setText("No hay recomendaciones disponibles.");
-            return;
-        }
-
-        // Seleccionar una recomendación aleatoria
-        Recomendacion recomendacion;
-        do {
-            int indiceAleatorio = (int) (Math.random() * recomendaciones.size());
-            recomendacion = recomendaciones.get(indiceAleatorio);
-        } while (recomendacion.getDescripcion().equals(ultimaRecomendacion));
-
-        // Mostrar la recomendación
-        ultimaRecomendacion = recomendacion.getDescripcion();
-        textRecomendacion.setText(ultimaRecomendacion);
     }
 
     /**
      * Muestra la media diaria de la huella de carbono.
      */
+    /**
+     * Muestra la media diaria de la huella de carbono.
+     */
     @FXML
     private void handleMediaDiaria() {
-        double mediaDiaria = calcularMedia(1); // 1 día
+        double mediaDiaria = calcularMedia(1);
         textRecomendacion.setText(String.format("Media Diaria: %.2f kg CO₂", mediaDiaria));
-
-        // Actualizar gráficos
-        actualizarGraficos();
+        actualizarGraficos(1);
     }
 
     /**
@@ -211,9 +182,7 @@ public class GraficosController extends Controller implements Initializable {
     private void handleMediaSemanal() {
         double mediaSemanal = calcularMedia(7); // 7 días
         textRecomendacion.setText(String.format("Media Semanal: %.2f kg CO₂", mediaSemanal));
-
-        // Actualizar gráficos
-        actualizarGraficos();
+        actualizarGraficos(7); // Actualizar gráficos con la media semanal
     }
 
     /**
@@ -223,9 +192,7 @@ public class GraficosController extends Controller implements Initializable {
     private void handleMediaMensual() {
         double mediaMensual = calcularMedia(30); // 30 días
         textRecomendacion.setText(String.format("Media Mensual: %.2f kg CO₂", mediaMensual));
-
-        // Actualizar gráficos
-        actualizarGraficos();
+        actualizarGraficos(30); // Actualizar gráficos con la media mensual
     }
 
     /**

@@ -3,8 +3,10 @@ package com.github.dangelcrack.model.services;
 import com.github.dangelcrack.model.dao.HuellaDAO;
 import com.github.dangelcrack.model.entity.Huella;
 import com.github.dangelcrack.model.entity.Usuario;
+import javafx.collections.ObservableList;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Clase de servicio que gestiona la lógica de negocio de las huellas.
@@ -14,7 +16,7 @@ public class HuellaService {
     private final HuellaDAO huellaDAO;
 
     public HuellaService() {
-        this.huellaDAO = new HuellaDAO(); // Instanciamos el DAO
+        this.huellaDAO = HuellaDAO.build(); // Instanciamos el DAO usando el método de fábrica
     }
 
     /**
@@ -65,5 +67,18 @@ public class HuellaService {
      */
     public List<Huella> obtenerHuellasPorUsuario(Usuario usuario) {
         return huellaDAO.obtenerHuellasPorUsuario(usuario);
+    }
+
+    /**
+     * Obtiene las unidades asociadas a las huellas proporcionadas.
+     *
+     * @param huellas la lista de huellas de las cuales se extraerán las unidades.
+     * @return una lista de unidades únicas asociadas a las huellas.
+     */
+    public List<String> obtenerUnidadesPorHuellas(ObservableList<Huella> huellas) {
+        return huellas.stream()
+                .map(Huella::getUnidad)
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

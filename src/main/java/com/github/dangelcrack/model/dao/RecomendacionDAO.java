@@ -40,6 +40,19 @@ public class RecomendacionDAO {
         }
         return recomendacionesFiltradas;
     }
+    public List<Recomendacion> obtenerRecomendacionesPorUnidades(List<String> unidades) {
+        try (Session session = Connection.getInstance().getSession()) {
+            Query<Recomendacion> query = session.createQuery(
+                    "SELECT r FROM Recomendacion r " +
+                            "JOIN Categoria c ON r.idCategoria.id = c.id " +
+                            "WHERE c.unidad IN :unidades", Recomendacion.class);
+            query.setParameter("unidades", unidades);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
 
     /**
      * Método de fábrica para crear una instancia de RecomendacionDAO.

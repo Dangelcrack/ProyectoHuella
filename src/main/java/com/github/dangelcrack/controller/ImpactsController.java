@@ -7,6 +7,9 @@ import com.github.dangelcrack.model.entity.Categoria;
 import com.github.dangelcrack.model.entity.Huella;
 import com.github.dangelcrack.model.entity.Recomendacion;
 import com.github.dangelcrack.model.entity.Usuario;
+import com.github.dangelcrack.model.services.CategoriaService;
+import com.github.dangelcrack.model.services.HuellaService;
+import com.github.dangelcrack.model.services.RecomendacionService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -62,7 +65,9 @@ public class ImpactsController extends Controller implements Initializable {
     private Button btnAccion;
     @FXML
     private Text textRecomendacion;
-
+    private HuellaService huellaService;
+    private CategoriaService categoriaService;
+    private RecomendacionService recomendacionService;
     /** Observable Lists to store data */
     private ObservableList<Huella> huellas;
     private ObservableList<Categoria> categorias;
@@ -76,6 +81,9 @@ public class ImpactsController extends Controller implements Initializable {
      */
     @Override
     public void onOpen(Usuario usuario, Object input) throws IOException {
+        this.huellaService = new HuellaService();
+        this.categoriaService = new CategoriaService();
+        this.recomendacionService = new RecomendacionService();
         List<Huella> huellasList = HuellaDAO.build().obtenerHuellasPorUsuario(usuario);
         this.huellas = FXCollections.observableArrayList(huellasList);
         tableViewhuellas.setItems(this.huellas);
@@ -221,34 +229,24 @@ public class ImpactsController extends Controller implements Initializable {
      */
     @FXML
     private void handleRecomendacion() {
-        if (!huellas.isEmpty()) {
-            List<Categoria> categoriasAsociadas = huellas.stream()
-                    .map(huella -> huella.getUnidad())
-                    .distinct()
-                    .map(unidad -> categorias.stream()
-                            .filter(categoria -> categoria.getUnidad().equalsIgnoreCase(unidad))
-                            .findFirst()
-                            .orElse(null))
-                    .filter(categoria -> categoria != null)
-                    .collect(Collectors.toList());
-            if (!categoriasAsociadas.isEmpty()) {
-                RecomendacionDAO recomendacionDAO = RecomendacionDAO.build();
-                List<Recomendacion> recomendaciones = categoriasAsociadas.stream()
-                        .flatMap(categoria -> recomendacionDAO.filtrarPorHuella(categoria.getId()).stream())
-                        .collect(Collectors.toList());
-                if (!recomendaciones.isEmpty()) {
-                    Recomendacion recomendacion = null;
-                    while (recomendacion == null || recomendacion.getDescripcion().equals(ultimaRecomendacion)) {
-                        int indiceAleatorio = (int) (Math.random() * recomendaciones.size());
-                        recomendacion = recomendaciones.get(indiceAleatorio);
-                    }
-                    ultimaRecomendacion = recomendacion.getDescripcion();
-                    textRecomendacion.setText(ultimaRecomendacion);
-                }
-            }
-        } else {
+        if (huellas.isEmpty()) {
             textRecomendacion.setText("El usuario no tiene huellas asociadas.");
+            return;
         }
+
+        // Obtener las unidades asociadas a las huellas
+        List<String> unidades = huellaService.obtenerUnidadesPorHuellas(huellas);
+        List<Recomendacion> recomendaciones = recomendacionService.obtenerRecomendacionesPorUnidades(unidades);
+
+        if (recomendaciones.isEmpty()) {
+            textRecomendacion.setText("No hay recomendaciones disponibles.");
+            return;
+        }
+
+        // Seleccionar una recomendación aleatoria
+        Recomendacion recomendacion = recomendaciones.get((int) (Math.random() * recomendaciones.size()));
+        ultimaRecomendacion = recomendacion.getDescripcion();
+        textRecomendacion.setText(ultimaRecomendacion);
     }
 
 }
