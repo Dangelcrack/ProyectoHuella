@@ -24,16 +24,22 @@ import java.util.ResourceBundle;
 public class HabitoController extends Controller implements Initializable {
 
     /** Contenedor principal en la interfaz gráfica */
-    @FXML private VBox vBox;
+    @FXML
+    private VBox vBox;
 
     /** Tabla para mostrar los hábitos */
-    @FXML private TableView<Habito> tableView;
+    @FXML
+    private TableView<Habito> tableView;
 
     /** Columnas de la tabla */
-    @FXML private TableColumn<Habito, Integer> frecuenciaColumn;
-    @FXML private TableColumn<Habito, String> tipoColumn;
-    @FXML private TableColumn<Habito, String> fechaColumn;
-    @FXML private TableColumn<Habito, String> actividadColumn;
+    @FXML
+    private TableColumn<Habito, Integer> frecuenciaColumn;
+    @FXML
+    private TableColumn<Habito, String> tipoColumn;
+    @FXML
+    private TableColumn<Habito, String> fechaColumn;
+    @FXML
+    private TableColumn<Habito, String> actividadColumn;
 
     /** Lista observable de hábitos */
     private ObservableList<Habito> habitos;
