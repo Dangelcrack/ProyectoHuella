@@ -10,20 +10,29 @@ import com.github.dangelcrack.model.entity.Usuario;
 import com.github.dangelcrack.model.services.CategoriaService;
 import com.github.dangelcrack.model.services.HuellaService;
 import com.github.dangelcrack.model.services.RecomendacionService;
+import com.github.dangelcrack.utils.Utils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -32,6 +41,8 @@ import java.util.stream.Collectors;
 public class ImpactsController extends Controller implements Initializable {
 
     /** FXML Table Views and Columns */
+    @FXML
+    private VBox vBox;
     @FXML
     private TableView<Huella> tableViewhuellas;
     @FXML
@@ -66,6 +77,7 @@ public class ImpactsController extends Controller implements Initializable {
     @FXML
     private Text textRecomendacion;
     private HuellaService huellaService;
+    private Usuario usuario;
     private CategoriaService categoriaService;
     private RecomendacionService recomendacionService;
     /** Observable Lists to store data */
@@ -81,6 +93,7 @@ public class ImpactsController extends Controller implements Initializable {
      */
     @Override
     public void onOpen(Usuario usuario, Object input) throws IOException {
+        this.usuario = usuario;
         this.huellaService = new HuellaService();
         this.categoriaService = new CategoriaService();
         this.recomendacionService = new RecomendacionService();
@@ -248,5 +261,70 @@ public class ImpactsController extends Controller implements Initializable {
         ultimaRecomendacion = recomendacion.getDescripcion();
         textRecomendacion.setText(ultimaRecomendacion);
     }
+    @FXML
+    private void handleExportConversation() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar Huellas");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        fileChooser.setInitialFileName("huellas_" + usuario.getNombre() + ".csv");
 
+        // Mostrar el diálogo de guardar archivo
+        File file = fileChooser.showSaveDialog(vBox.getScene().getWindow());
+
+        if (file != null) {
+            exportConversationToFile(file.toPath());
+        }
+    }
+
+    private void exportConversationToFile(Path filePath) {
+        try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+            // Escribir el encabezado del CSV
+            writer.write("Fecha,Valor,Unidad,Actividad,Recomendación\n"); // CSV Header
+
+            // Escribir cada huella en el archivo CSV
+            for (Huella huella : huellas) {
+                // Obtener la recomendación asociada a la huella (si existe)
+                String recomendacion = obtenerRecomendacionParaHuella(huella);
+
+                // Formatear la línea con los datos de la huella y la recomendación
+                String linea = String.format("%s,%d,%s,%s,%s",
+                        huella.getFecha().toLocalDate().toString(),
+                        huella.getValor().intValue(),
+                        huella.getUnidad(),
+                        huella.getIdActividad().getNombre(),
+                        recomendacion);
+
+                writer.write(linea);
+                writer.newLine();
+            }
+
+            // Mostrar alerta de éxito
+            Utils.showAlert("Huellas Exportadas", "Las huellas se han exportado correctamente.", Alert.AlertType.INFORMATION);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Mostrar alerta de error
+            Utils.showAlert("Error de Exportación", "No se pudo exportar las huellas.", Alert.AlertType.ERROR);
+        }
+    }
+
+    /**
+     * Método para obtener la recomendación asociada a una huella.
+     * @param huella la huella para la cual se busca la recomendación
+     * @return la recomendación asociada o "Sin recomendación" si no hay ninguna
+     */
+    private String obtenerRecomendacionParaHuella(Huella huella) {
+        // Obtener las unidades asociadas a la huella
+        List<String> unidades = List.of(huella.getUnidad());
+
+        // Obtener las recomendaciones asociadas a la unidad de la huella
+        List<Recomendacion> recomendaciones = recomendacionService.obtenerRecomendacionesPorUnidades(unidades);
+
+        if (recomendaciones.isEmpty()) {
+            return "Sin recomendación";
+        }
+
+        // Seleccionar una recomendación aleatoria (o la primera, dependiendo de tu lógica)
+        Recomendacion recomendacion = recomendaciones.get((int) (Math.random() * recomendaciones.size()));
+        return recomendacion.getDescripcion();
+    }
 }

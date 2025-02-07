@@ -13,7 +13,7 @@
 <HBox fx:id="hBox" alignment="CENTER" prefHeight="500.0" prefWidth="800.0" spacing="20.0" style="-fx-background-color: radial-gradient(center 50% 50%, radius 60%, #002147, #000000);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.dangelcrack.controller.ImpactsController">
 
     <children>
-        <VBox prefWidth="700.0" spacing="20.0">
+        <VBox  fx:id="vBox" prefWidth="700.0" spacing="20.0">
             <children>
                 <TableView fx:id="tableViewhuellas" editable="true" maxWidth="700.0" prefWidth="700.0" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-color: transparent; -fx-border-color: rgba(0,200,255,0.6);">
                     <columns>
@@ -48,6 +48,9 @@
             </ImageView>
                 <Button fx:id="btnAccion" mnemonicParsing="false" prefWidth="180.0" style="-fx-background-color: linear-gradient(to bottom, #00A8E8, #006494); -fx-text-fill: white; -fx-background-radius: 30; -fx-padding: 12px 30px; -fx-font-weight: bold;" text="¡RECOMENDACIÓN!" />
                 <Text fx:id="textRecomendacion" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-fill: white; -fx-text-alignment: CENTER; -fx-wrap-text: true;" textAlignment="CENTER" wrappingWidth="250.0" />
+                <Button fx:id="exportButton" text="Export Conversation" onAction="#handleExportConversation"
+                        style="-fx-background-color: linear-gradient(to right, #FF9800, #F57C00); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10; -fx-font-size: 16; -fx-font-family: 'Segoe UI'; -fx-font-weight: bold;"/>
+
             </children>
         </VBox>
     </children>
