@@ -28,10 +28,12 @@
       </HBox>
         <TableView fx:id="tableView" editable="true" maxWidth="1000.0" minWidth="1000.0" prefWidth="1000.0" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-color: transparent; -fx-border-color: rgba(0,200,255,0.6);">
             <columns>
-                <TableColumn fx:id="posicionColumn" prefWidth="250.0" resizable="false" text="Puesto" />
-                <TableColumn fx:id="nameColumn" prefWidth="250.0" resizable="false" text="Nombre" />
-                <TableColumn fx:id="cantidadColumn" prefWidth="250.0" resizable="false" text="Cantidad Emitida" />
-                <TableColumn fx:id="cantidadDeHuellas" prefWidth="250.0" resizable="false" text="Cantidad Huellas" />
+                <TableColumn fx:id="posicionColumn" prefWidth="200.0" resizable="false" text="Puesto" />
+                <TableColumn fx:id="nameColumn" prefWidth="200.0" resizable="false" text="Nombre" />
+                <TableColumn fx:id="cantidadColumn" prefWidth="200.0" resizable="false" text="Cantidad Emitida" />
+                <TableColumn fx:id="categoriaColumn" prefWidth="200.0" resizable="false" text="Categoria" />
+                <TableColumn fx:id="cantidadDeHuellas" prefWidth="200.0" resizable="false" text="Cantidad Huellas" />
+
             </columns>
         </TableView>
     </children>

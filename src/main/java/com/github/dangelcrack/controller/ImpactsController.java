@@ -262,7 +262,7 @@ public class ImpactsController extends Controller implements Initializable {
         textRecomendacion.setText(ultimaRecomendacion);
     }
     @FXML
-    private void handleExportConversation() {
+    private void handleExportHuellas() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Guardar Huellas");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
@@ -272,11 +272,11 @@ public class ImpactsController extends Controller implements Initializable {
         File file = fileChooser.showSaveDialog(vBox.getScene().getWindow());
 
         if (file != null) {
-            exportConversationToFile(file.toPath());
+            exportHuellasToFile(file.toPath());
         }
     }
 
-    private void exportConversationToFile(Path filePath) {
+    private void exportHuellasToFile(Path filePath) {
         try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             // Escribir el encabezado del CSV
             writer.write("Fecha,Valor,Unidad,Actividad,Recomendación\n"); // CSV Header

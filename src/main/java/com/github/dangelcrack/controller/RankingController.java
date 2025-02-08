@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -49,6 +50,8 @@ public class RankingController extends Controller implements Initializable {
     /** Columna para mostrar la media de huellas del usuario */
     @FXML
     private TableColumn<Usuario, String> cantidadColumn;
+    @FXML
+    private TableColumn<Usuario, String> categoriaColumn;
 
     /** Columna para mostrar la cantidad de huellas del usuario */
     @FXML
@@ -113,6 +116,23 @@ public class RankingController extends Controller implements Initializable {
         posicionColumn.setCellValueFactory(usuario -> new SimpleStringProperty(String.valueOf(usuarios.indexOf(usuario.getValue()) + 1)));
         cantidadColumn.setCellValueFactory(usuario -> calcularMedia(usuario.getValue()));
         cantidadDeHuellas.setCellValueFactory(usuario -> new SimpleStringProperty(String.valueOf(usuario.getValue().getHuellas().size())));
+        categoriaColumn.setCellValueFactory(usuario -> {
+            // Obtiene la lista de huellas del usuario
+            List<Huella> huellas = usuario.getValue().getHuellas();
+
+            // Si no hay huellas, devuelve "No registrado"
+            if (huellas.isEmpty()) {
+                return new SimpleStringProperty("No registrado");
+            }
+
+            // Obtiene todas las categorías únicas de las huellas
+            String categorias = huellas.stream()
+                    .map(huella -> huella.getIdActividad().getIdCategoria().getNombre())
+                    .distinct() // Elimina duplicados
+                    .collect(Collectors.joining(", ")); // Une las categorías con comas
+
+            return new SimpleStringProperty(categorias);
+        });
     }
 
     /**

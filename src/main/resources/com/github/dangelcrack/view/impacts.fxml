@@ -17,20 +17,20 @@
             <children>
                 <TableView fx:id="tableViewhuellas" editable="true" maxWidth="700.0" prefWidth="700.0" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-color: transparent; -fx-border-color: rgba(0,200,255,0.6);">
                     <columns>
-                        <TableColumn fx:id="actividadColumnhuellas" prefWidth="150.0" resizable="false" style="-fx-text-fill: white;" text="Actividad" />
-                        <TableColumn fx:id="valorColumnhuellas" prefWidth="100.0" resizable="false" style="-fx-text-fill: white;" text="Valor" />
-                        <TableColumn fx:id="unidadColumnhuellas" prefWidth="110.0" resizable="false" style="-fx-text-fill: white;" text="Unidad" />
-                        <TableColumn fx:id="fechaColumnhuellas" prefWidth="130.0" resizable="false" style="-fx-text-fill: white;" text="Fecha" />
-                        <TableColumn fx:id="cantidadEmitida" prefWidth="200.0" resizable="false" style="-fx-text-fill: white;" text="Impacto" />
+                        <TableColumn fx:id="actividadColumnhuellas" prefWidth="150.0" resizable="false"  text="Actividad" />
+                        <TableColumn fx:id="valorColumnhuellas" prefWidth="100.0" resizable="false"  text="Valor" />
+                        <TableColumn fx:id="unidadColumnhuellas" prefWidth="110.0" resizable="false"  text="Unidad" />
+                        <TableColumn fx:id="fechaColumnhuellas" prefWidth="130.0" resizable="false"  text="Fecha" />
+                        <TableColumn fx:id="cantidadEmitida" prefWidth="200.0" resizable="false"  text="Impacto" />
                     </columns>
                 </TableView>
                 <TableView fx:id="tableViewCalculo" editable="true" maxWidth="700.0" prefWidth="700.0" style=" -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-color: transparent; -fx-border-color: rgba(0,200,255,0.6);">
                     <columns>
-                        <TableColumn fx:id="categoriaColumnCalculo" prefWidth="125.0" resizable="false" style="-fx-text-fill: white;" text="Categoría" />
-                        <TableColumn fx:id="totalColumnCalculo" prefWidth="110.0" resizable="false" style="-fx-text-fill: white;" text="Total" />
-                        <TableColumn fx:id="mediaDiariaColumnCalculo" prefWidth="110.0" resizable="false" style="-fx-text-fill: white;" text="Media Diaria" />
-                        <TableColumn fx:id="mediaSemanalColumnCalculo" prefWidth="150.0" resizable="false" style="-fx-text-fill: white;" text="Media Semanal" />
-                        <TableColumn fx:id="mediaMensualColumnCalculo" prefWidth="200.0" resizable="false" style="-fx-text-fill: white;" text="Media Mensual" />
+                        <TableColumn fx:id="categoriaColumnCalculo" prefWidth="125.0" resizable="false"  text="Categoría" />
+                        <TableColumn fx:id="totalColumnCalculo" prefWidth="110.0" resizable="false"  text="Total" />
+                        <TableColumn fx:id="mediaDiariaColumnCalculo" prefWidth="110.0" resizable="false"  text="Media Diaria" />
+                        <TableColumn fx:id="mediaSemanalColumnCalculo" prefWidth="150.0" resizable="false" text="Media Semanal" />
+                        <TableColumn fx:id="mediaMensualColumnCalculo" prefWidth="200.0" resizable="false"  text="Media Mensual" />
 
                     </columns>
                 </TableView>
@@ -48,7 +48,7 @@
             </ImageView>
                 <Button fx:id="btnAccion" mnemonicParsing="false" prefWidth="180.0" style="-fx-background-color: linear-gradient(to bottom, #00A8E8, #006494); -fx-text-fill: white; -fx-background-radius: 30; -fx-padding: 12px 30px; -fx-font-weight: bold;" text="¡RECOMENDACIÓN!" />
                 <Text fx:id="textRecomendacion" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-fill: white; -fx-text-alignment: CENTER; -fx-wrap-text: true;" textAlignment="CENTER" wrappingWidth="250.0" />
-                <Button fx:id="exportButton" text="Export Conversation" onAction="#handleExportConversation"
+                <Button fx:id="exportButton" text="Exportar Huellas" onAction="#handleExportHuellas"
                         style="-fx-background-color: linear-gradient(to right, #FF9800, #F57C00); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10; -fx-font-size: 16; -fx-font-family: 'Segoe UI'; -fx-font-weight: bold;"/>
 
             </children>
